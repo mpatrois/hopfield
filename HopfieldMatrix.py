@@ -1,6 +1,5 @@
 import numpy
 import json
-from jsoncomment import JsonComment
 
 class HopfieldMatrix:
 	

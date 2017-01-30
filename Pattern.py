@@ -1,29 +1,32 @@
 import numpy
+import random
 
 class Pattern:
   
   def __init__(self,array,isBinary):
-    self.data     = array
+    self.original = array
     self.steps    = []
-    self.maxValue = 1;
-    self.minValue = 0 if isBinary else -1;
+    self.maxValue = 1.0;
+    self.minValue = 0.0 if isBinary else -1.0;
 
-  def calculAllSteps(self,matrixHop):
+  def calculAllSteps(self,matrixHop,errorPercentage):
 
-    start  = numpy.array(self.data)
+    data = self.makeNoise(errorPercentage)
+    
+    start  = numpy.array(data)
     self.steps.append(start)
     
     out = numpy.dot(start,matrixHop)
     
     for i in range(len(out)):
-      out[i] =  self.transferFunction(out[i],'third')
+      out[i] =  self.transferFunction(out[i],'second')
     
     self.steps.append(out)
       
     while( self.isStable(out) == 0 ):
       out = numpy.dot(out,matrixHop) #multiply matrix out by matrixHop
       for i in range(len(out)):
-        out[i] =  self.transferFunction(out[i],'third')
+        out[i] =  self.transferFunction(out[i],'second')
       self.steps.append(out)
 
 
@@ -48,3 +51,40 @@ class Pattern:
       else :
         return number
 
+  def errorPercentage(self,wantedData):
+    nbErrors = 0
+    lastStep = self.getLastStep()
+
+    if(lastStep is not None):
+      for i in range(len(lastStep)):
+        if(lastStep[i]!=wantedData[i]):
+          nbErrors += 1
+      
+    return (nbErrors*100)/len(wantedData)
+
+  def getLastStep(self):
+    if(self.nbSteps()>0):
+      return self.steps[self.nbSteps()-1]
+
+  def getFirstStep(self):
+    if(self.nbSteps()>0):
+      return self.steps[0]
+
+  def nbSteps(self):
+    return len(self.steps)
+
+
+  def makeNoise(self,noisePercentage):
+    nbErrorsToMake = noisePercentage * len(self.original) / 100
+    array = [i for i in range(len(self.original))]
+    random.shuffle(array)
+
+    errors = [array.pop() for i in range(int(nbErrorsToMake))]
+      
+    data = self.original[:]
+
+    while len(errors)>0:
+      idx = errors.pop()
+      data[idx] = data[idx] * (-1.0)
+
+    return data

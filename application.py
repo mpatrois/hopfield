@@ -1,10 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-__author__ = "mmc <marc.corsini@u-bordeaux2.fr>"
-__date__ = "01.10.13"
-__usage__ = "Hopfield synchrone"
-
 from PyQt4.QtCore import *
 from PyQt4.QtGui  import *
 
@@ -23,7 +19,7 @@ class Window(QMainWindow):
     def __init__(self,patternsView,hopfieldMatrixView):
       QMainWindow.__init__(self)
       self.setWindowTitle("Réseau de Hopfield")
-      self.setGeometry(50, 50, 500, 500)
+      self.setGeometry(0, 00, 500, 500)
       self.path = QPainterPath()
       self.mainMenu  = self.menuBar()
       
@@ -75,8 +71,9 @@ def generateDatasRamdomly():
 
 
 
-SQUARE_WIDTH = 10
+SQUARE_WIDTH = 15
 NB_COLUMN = 5
+NOISE = 10
 
 
 hopfieldMatrix = HopfieldMatrix()
@@ -91,7 +88,7 @@ datas    = generateDatasFromFile()
 
 for data in datas:
   pattern = Pattern(data,False)
-  pattern.calculAllSteps(hopfieldMatrix.matrix)
+  pattern.calculAllSteps(hopfieldMatrix.matrix,NOISE)
   patterns.append(pattern)
 
 patternsView = []
