@@ -19,7 +19,7 @@ class Window(QMainWindow):
     def __init__(self,patternsView,hopfieldMatrixView):
       QMainWindow.__init__(self)
       self.setWindowTitle("Réseau de Hopfield")
-      self.setGeometry(0, 00, 500, 500)
+      self.setGeometry(0, 00, 900, 900)
       self.path = QPainterPath()
       self.mainMenu  = self.menuBar()
       
@@ -71,9 +71,10 @@ def generateDatasRamdomly():
 
 
 
-SQUARE_WIDTH = 15
+SQUARE_WIDTH = 10
 NB_COLUMN = 5
-NOISE = 10
+NOISE = 0
+IS_BINARY = False
 
 
 hopfieldMatrix = HopfieldMatrix()
@@ -87,8 +88,8 @@ patterns = []
 datas    = generateDatasFromFile()
 
 for data in datas:
-  pattern = Pattern(data,False)
-  pattern.calculAllSteps(hopfieldMatrix.matrix,NOISE)
+  pattern = Pattern(data,hopfieldMatrix,IS_BINARY)
+  pattern.calculAllSteps(NOISE)
   patterns.append(pattern)
 
 patternsView = []

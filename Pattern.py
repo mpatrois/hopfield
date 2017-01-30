@@ -3,14 +3,16 @@ import random
 
 class Pattern:
   
-  def __init__(self,array,isBinary):
+  def __init__(self,array,hopfieldMatrix,isBinary):
     self.original = array
     self.steps    = []
     self.maxValue = 1.0;
     self.minValue = 0.0 if isBinary else -1.0;
+    self.hopfieldMatrix = hopfieldMatrix;
 
-  def calculAllSteps(self,matrixHop,errorPercentage):
+  def calculAllSteps(self,errorPercentage):
 
+    matrixHop = self.hopfieldMatrix.matrix
     data = self.makeNoise(errorPercentage)
     
     start  = numpy.array(data)
@@ -61,6 +63,22 @@ class Pattern:
           nbErrors += 1
       
     return (nbErrors*100)/len(wantedData)
+
+  def energy(self):
+    nbErrors = 0
+    lastStep  = self.getLastStep()
+    firstStep = self.getFirstStep()
+
+    matrixHop = self.hopfieldMatrix.matrix
+
+    length = len(self.original)
+    result = 0
+    for i in range(length):
+      for j in range(length):
+        result += lastStep[i]*lastStep[j]*matrixHop[i][j]
+
+    return (-1/2)*result
+    
 
   def getLastStep(self):
     if(self.nbSteps()>0):

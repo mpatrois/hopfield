@@ -18,6 +18,7 @@ class PatternView:
       drawPattern(painter,step,xStep+10,y,self.nbCol,self.size)
 
     self.drawErrorPercentage(painter,x + 10 + len(self.pattern.steps) * self.getWidth(),y + self.getHeight()/2)
+    self.drawEnergy(painter,x + 10 + len(self.pattern.steps) * self.getWidth(),y + self.getHeight())
 
   def drawErrorPercentage(self,painter,x,y):
     errorPercentage = self.pattern.errorPercentage(self.pattern.getFirstStep())
@@ -28,6 +29,17 @@ class PatternView:
     font.setPixelSize(self.size * 1.5)
     path.addText(x,y, font, errorTxt)
     painter.setBrush(QBrush(Qt.blue))
+    painter.drawPath(path)
+
+  def drawEnergy(self,painter,x,y):
+    errorPercentage = self.pattern.energy()
+    errorTxt = str(errorPercentage) + "%"
+    
+    path = QPainterPath()
+    font = QFont()
+    font.setPixelSize(self.size * 1.5)
+    path.addText(x,y, font, errorTxt)
+    painter.setBrush(QBrush(Qt.red))
     painter.drawPath(path)
 
   def getHeight(self):

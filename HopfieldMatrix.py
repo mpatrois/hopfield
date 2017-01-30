@@ -19,3 +19,5 @@ class HopfieldMatrix:
 		for vector in self.datas :
 			v = numpy.array([vector])
 			self.matrix += v * v.T # v.T = numpy.transpose(v)
+		
+		self.matrix /= lng
