@@ -1,5 +1,5 @@
 import numpy
-from DrawPattern import drawPattern
+from DrawPattern import *
 
 class HopfieldMatrixView:
   
@@ -8,7 +8,7 @@ class HopfieldMatrixView:
     self.nbCol = nbCol
     self.size  = size
 
-  def drawDataLearned(self,painter,x,y):
+  def addDataLearnedToScene(self,scene,x,y):
     for idx,data  in enumerate(self.hopfieldMatrix.datas):
       xStep =  idx * (self.size * self.nbCol + 10) + x
-      drawPattern(painter,data,xStep+10,y,self.nbCol,self.size)
+      addPatternToScene(scene,data,xStep+10,y,self.nbCol,self.size)

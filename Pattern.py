@@ -103,6 +103,9 @@ class Pattern:
 
     while len(errors)>0:
       idx = errors.pop()
-      data[idx] = data[idx] * (-1.0)
+      if(data[idx] == self.minValue):
+        data[idx] = self.maxValue
+      else:
+        data[idx] = self.minValue
 
     return data

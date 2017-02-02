@@ -14,91 +14,153 @@ from HopfieldMatrixView import HopfieldMatrixView
 from Pattern            import Pattern
 from PatternView        import PatternView
 
+SQUARE_WIDTH = 15
+NB_COLUMN = 5
+
+
 class Window(QMainWindow):
 
-    def __init__(self,patternsView,hopfieldMatrixView):
+    def __init__(self):
       QMainWindow.__init__(self)
       self.setWindowTitle("Réseau de Hopfield")
-      self.setGeometry(0, 00, 900, 900)
-      self.path = QPainterPath()
-      self.mainMenu  = self.menuBar()
-      
-      self.initMenuBar()
+      self.setGeometry(0, 0, 900, 900)
 
-      self.patternsView = patternsView
-      self.hopfieldMatrixView = hopfieldMatrixView
+      self.patternsView = []
+      self.patterns = []
+
+      self.NOISE = 0
+      self.IS_BINARY = False
+
+      self.hopfieldMatrix = HopfieldMatrix()
+      self.hopfieldMatrix.loadDataByFile('data/data.json')
+
+      self.hopfieldMatrixView = HopfieldMatrixView(self.hopfieldMatrix,NB_COLUMN,SQUARE_WIDTH)
+
+      canvas = QGraphicsView()
+     
+      self.scene = QGraphicsScene(canvas)
+      canvas.setScene(self.scene)
+
+      widget = QWidget(self);
+      layout = QGridLayout(widget)
+      self.setCentralWidget(widget)
 
 
-    def paintEvent(self, event):
-      painter = QPainter()
-      painter.begin(self)
-      painter.setRenderHint(QPainter.Antialiasing)        
+      noiseLabel = QLabel('Taux de bruitage (%)')
       
-      painter.setPen(QPen(Qt.black))
       
+      spinBoxNoise = QSpinBox()
+      spinBoxNoise.setMaximum (100)
+      spinBoxNoise.setMinimum (0)
+      spinBoxNoise.valueChanged.connect(self.changeNoise)
+
+
+      typeCode = QLabel('Codage bivalué')
+      self.binaryComboBox = QComboBox()
+
+      self.binaryComboBox.addItems(["Bipolaire","Binaire"])
+      self.binaryComboBox.currentIndexChanged.connect(self.binaryComboBoxChanged)
+
+      layout.addWidget(typeCode,1,1)
+      layout.addWidget(self.binaryComboBox,1,2)
+      
+
+      layout.addWidget(noiseLabel,2,1)
+      layout.addWidget(spinBoxNoise,2,2)
+      
+      layout.addWidget(canvas,3,1,1,4,Qt.AlignTop)
+
+      self.loadPatternsAndTest()
+      self.drawDatas()
+
+      self.show()
+
+    def drawDatas(self):
+      self.scene.clear()
+
+      self.hopfieldMatrixView.addDataLearnedToScene(self.scene,30,10)
       for patternIndex, patternView in enumerate(self.patternsView):
-       y = patternIndex * ( patternView.getHeight() + 10 )
-       patternView.drawSteps(painter,30,y + 100)
-
-      self.hopfieldMatrixView.drawDataLearned(painter,30,10)
-
-      painter.drawPath(self.path)
-      painter.end()
-
-    def initMenuBar(self):
-      extractAction = QAction("&Nouveau", self)
-      extractAction.setShortcut("Ctrl+N")
-      extractAction.setStatusTip('Créer un nouveau réseau')
-
-      fileMenu  = self.mainMenu.addMenu('&Reseau')
-      fileMenu.addAction(extractAction)
-
-def generateDatasFromFile():
-  datas = []
-  with open('data/testPatterns.json') as data_file:    
-    datas = json.load(data_file)
-  return datas  
+       y = patternIndex * ( patternView.getHeight() + SQUARE_WIDTH )
+       patternView.addStepsToScene(self.scene,30,y + SQUARE_WIDTH * NB_COLUMN +2*SQUARE_WIDTH)
 
 
-def generateDatasRamdomly():
-  datas = []
-  for k in range(10):
-      data = []
-      for k in range(5*5):
-        data.append(random.choice([0,1]))
-      datas.append(data)
-  return datas  
+    def generateDatasFromFile(self):
+      datas = []
+      with open('data/testPatterns.json') as data_file:    
+        datas = json.load(data_file)
+      return datas  
+
+    def generateDatasRamdomly(self):
+      datas = []
+      for k in range(10):
+          data = []
+          for k in range(5*5):
+            data.append(random.choice([0,1]))
+          datas.append(data)
+      return datas  
+
+    def loadPatternsAndTest(self):
+      
+      self.patterns = []
+      datas = self.generateDatasFromFile()
+
+      self.changeTypeCoding(datas,self.IS_BINARY)
+      self.changeTypeCoding(self.hopfieldMatrix.datas,self.IS_BINARY)
+      self.hopfieldMatrix.learnFromDatas()
+
+      for data in datas:
+        pattern = Pattern(data,self.hopfieldMatrix,self.IS_BINARY)
+        pattern.calculAllSteps(self.NOISE)
+        self.patterns.append(pattern)
+
+      self.patternsView = []
+      for pattern in self.patterns:
+        patternView = PatternView(pattern,NB_COLUMN,SQUARE_WIDTH)
+        self.patternsView.append(patternView)
+
+    def changeNoise(self,newNoise):
+      self.NOISE = newNoise
+      self.loadPatternsAndTest()
+      self.drawDatas()
+
+
+    def binaryComboBoxChanged(self,idx):
+      value = self.binaryComboBox.itemText(idx)
+      
+      if( value == "Binaire" ):
+        self.IS_BINARY = True
+      elif (value == 'Bipolaire'):
+        self.IS_BINARY = False
+
+      self.loadPatternsAndTest()
+      self.drawDatas()
+
+    def changeTypeCoding(self,datas,isBinary):
+      lngVector  = len(datas[0])
+
+      for vector in datas :
+        for i in range(lngVector):
+          if(isBinary and vector[i] == -1):
+            vector[i] = 0.0
+          elif (not isBinary == False and vector[i] == 0):
+            vector[i] = -1.0
 
 
 
-SQUARE_WIDTH = 10
-NB_COLUMN = 5
-NOISE = 0
-IS_BINARY = False
 
 
-hopfieldMatrix = HopfieldMatrix()
-hopfieldMatrix.loadDataByFile('data/data.json')
-hopfieldMatrix.learnFromDatas()
-
-hopfieldMatrixView = HopfieldMatrixView(hopfieldMatrix,NB_COLUMN,SQUARE_WIDTH)
 
 
-patterns = []
-datas    = generateDatasFromFile()
 
-for data in datas:
-  pattern = Pattern(data,hopfieldMatrix,IS_BINARY)
-  pattern.calculAllSteps(NOISE)
-  patterns.append(pattern)
 
-patternsView = []
-for pattern in patterns:
-  patternView = PatternView(pattern,NB_COLUMN,SQUARE_WIDTH)
-  patternsView.append(patternView)
+
+
+
+
 
 app    = QApplication(sys.argv)
-window = Window(patternsView,hopfieldMatrixView)
-window.show()
+window = Window()
+
+
 
 sys.exit(app.exec_())

@@ -10,7 +10,6 @@ class HopfieldMatrix:
 	def loadDataByFile(self,fileName):
 		with open(fileName) as data_file: 
 			self.datas = json.load(data_file)
-			
 
 	def learnFromDatas(self):
 		lng         = len(self.datas[0])

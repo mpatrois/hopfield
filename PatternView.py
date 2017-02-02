@@ -2,7 +2,7 @@ import numpy
 from PyQt4.QtGui  import *
 from PyQt4.QtCore import *
 
-from DrawPattern import drawPattern
+from DrawPattern import *
 
 class PatternView:
   
@@ -20,27 +20,32 @@ class PatternView:
     self.drawErrorPercentage(painter,x + 10 + len(self.pattern.steps) * self.getWidth(),y + self.getHeight()/2)
     self.drawEnergy(painter,x + 10 + len(self.pattern.steps) * self.getWidth(),y + self.getHeight())
 
-  def drawErrorPercentage(self,painter,x,y):
-    errorPercentage = self.pattern.errorPercentage(self.pattern.getFirstStep())
-    errorTxt = str(errorPercentage) + "%"
-    
-    path = QPainterPath()
-    font = QFont()
-    font.setPixelSize(self.size * 1.5)
-    path.addText(x,y, font, errorTxt)
-    painter.setBrush(QBrush(Qt.blue))
-    painter.drawPath(path)
+  def addStepsToScene(self,scene,x,y):
+    for idx,step in enumerate(self.pattern.steps):
+      xStep =  idx * self.getWidth() + x
+      addPatternToScene(scene,step,xStep+10,y,self.nbCol,self.size)
 
-  def drawEnergy(self,painter,x,y):
-    errorPercentage = self.pattern.energy()
-    errorTxt = str(errorPercentage) + "%"
+    self.addPercentage(scene,x,y)
+    self.addEnergy(scene,x,y)
     
-    path = QPainterPath()
-    font = QFont()
-    font.setPixelSize(self.size * 1.5)
-    path.addText(x,y, font, errorTxt)
-    painter.setBrush(QBrush(Qt.red))
-    painter.drawPath(path)
+
+
+  def addPercentage(self,scene,x,y):
+    errorPercentage = self.pattern.errorPercentage(self.pattern.getFirstStep())
+    errorTxt = 'Erreur :' + str(errorPercentage) + "%"
+    xPercentage = x + 10 + len(self.pattern.steps) * self.getWidth()
+    yPercentage = y + self.size /2
+
+    addTextToScene(scene,xPercentage,yPercentage,errorTxt,self.size,'red')
+
+
+  def addEnergy(self,scene,x,y):
+    energy = self.pattern.energy()
+    energyTxt ='Energie :' + str(energy)
+    xEnergy = x + 10 + len(self.pattern.steps) * self.getWidth()
+    yEnergy = y + self.getHeight() /2 + self.size /2
+    
+    addTextToScene(scene,xEnergy,yEnergy,energyTxt,self.size,'blue')
 
   def getHeight(self):
     return len(self.pattern.original)/self.nbCol * self.size
