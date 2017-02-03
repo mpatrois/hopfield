@@ -10,8 +10,9 @@ def addPatternToScene(scene,data,x,y,nbCol,size):
    
     for i in range(len(data)):
         
-        if(i%nbCol==0):
+        if(i%nbCol==0 and i != 0):
           line += 1
+
         col = i%nbCol
 
         xCase = x + col  * size
@@ -22,9 +23,14 @@ def addPatternToScene(scene,data,x,y,nbCol,size):
 
         scene.addRect(case, QPen(QColor("black")), case_color)
 
+
         # addTextToScene(scene,xCase,yCase,str(data[i]),size/2,'white')
 
-    
+
+def addRectToScene(scene,x,y,w,h,color):
+    case = QRectF(x,y,w,h)
+    scene.addRect(case, QPen(QColor("black")), QBrush(QColor(color)))
+
 def addTextToScene(scene,x,y,text,size,color):
     
     textItem = QGraphicsTextItem()

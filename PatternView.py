@@ -6,7 +6,7 @@ from DrawPattern import *
 
 class PatternView:
   
-  def __init__(self,pattern,nbCol,size=20):
+  def __init__(self,pattern,nbCol,size):
     self.pattern = pattern
     self.nbCol   = nbCol
     self.size    = size

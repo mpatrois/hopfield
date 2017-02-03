@@ -14,7 +14,7 @@ from HopfieldMatrixView import HopfieldMatrixView
 from Pattern            import Pattern
 from PatternView        import PatternView
 
-SQUARE_WIDTH = 15
+SQUARE_WIDTH = 13
 NB_COLUMN = 5
 
 
@@ -23,30 +23,37 @@ class Window(QMainWindow):
     def __init__(self):
       QMainWindow.__init__(self)
       self.setWindowTitle("Réseau de Hopfield")
-      self.setGeometry(0, 0, 900, 900)
-
-      self.patternsView = []
-      self.patterns = []
+      self.setWindowState(Qt.WindowMaximized)
+      self.setWindowState(Qt.WindowMaximized)
+      self.setWindowState(Qt.WindowMaximized)
 
       self.NOISE = 0
       self.IS_BINARY = False
 
+      self.patterns = []
+      self.patternsView = []
+      
       self.hopfieldMatrix = HopfieldMatrix()
       self.hopfieldMatrix.loadDataByFile('data/data.json')
 
-      self.hopfieldMatrixView = HopfieldMatrixView(self.hopfieldMatrix,NB_COLUMN,SQUARE_WIDTH)
+      self.hopfieldMatrixView = HopfieldMatrixView(self.hopfieldMatrix,NB_COLUMN,SQUARE_WIDTH,self)
 
-      canvas = QGraphicsView()
+      canvasPatterns = QGraphicsView()
+      self.hopfieldMatrixView.setMaximumHeight(SQUARE_WIDTH * NB_COLUMN + 2)
+      self.hopfieldMatrixView.setMinimumHeight(SQUARE_WIDTH * NB_COLUMN + 2)
      
-      self.scene = QGraphicsScene(canvas)
-      canvas.setScene(self.scene)
+      self.scenePatterns = QGraphicsScene(canvasPatterns)
+      canvasPatterns.setScene(self.scenePatterns)
 
-      widget = QWidget(self);
+
+      widget = QWidget(self)
       layout = QGridLayout(widget)
       self.setCentralWidget(widget)
 
 
       noiseLabel = QLabel('Taux de bruitage (%)')
+      hopfieldLabel = QLabel('Patrons appris :')
+      patternsLabel = QLabel('Patrons testés :')
       
       
       spinBoxNoise = QSpinBox()
@@ -54,6 +61,7 @@ class Window(QMainWindow):
       spinBoxNoise.setMinimum (0)
       spinBoxNoise.valueChanged.connect(self.changeNoise)
 
+      self.labelTest = QLabel('Test')
 
       typeCode = QLabel('Codage bivalué')
       self.binaryComboBox = QComboBox()
@@ -61,14 +69,20 @@ class Window(QMainWindow):
       self.binaryComboBox.addItems(["Bipolaire","Binaire"])
       self.binaryComboBox.currentIndexChanged.connect(self.binaryComboBoxChanged)
 
-      layout.addWidget(typeCode,1,1)
+      layout.addWidget(self.labelTest,1,1)
       layout.addWidget(self.binaryComboBox,1,2)
       
 
       layout.addWidget(noiseLabel,2,1)
       layout.addWidget(spinBoxNoise,2,2)
       
-      layout.addWidget(canvas,3,1,1,4,Qt.AlignTop)
+      layout.addWidget(hopfieldLabel,3,1)
+      layout.addWidget(self.hopfieldMatrixView,3,2)
+      
+      
+      layout.addWidget(patternsLabel,4,1)
+      layout.addWidget(canvasPatterns,4,2)
+      
 
       self.loadPatternsAndTest()
       self.drawDatas()
@@ -76,12 +90,15 @@ class Window(QMainWindow):
       self.show()
 
     def drawDatas(self):
-      self.scene.clear()
+      self.scenePatterns.clear()
+      self.hopfieldMatrixView.drawLearnedPatterns()
+      # self.sceneHopfieldMatrix.clear()
 
-      self.hopfieldMatrixView.addDataLearnedToScene(self.scene,30,10)
+      # self.hopfieldMatrixView.addDataLearnedToScene(self.sceneHopfieldMatrix)
+      
       for patternIndex, patternView in enumerate(self.patternsView):
        y = patternIndex * ( patternView.getHeight() + SQUARE_WIDTH )
-       patternView.addStepsToScene(self.scene,30,y + SQUARE_WIDTH * NB_COLUMN +2*SQUARE_WIDTH)
+       patternView.addStepsToScene(self.scenePatterns,30,y + SQUARE_WIDTH * NB_COLUMN +2*SQUARE_WIDTH)
 
 
     def generateDatasFromFile(self):
@@ -106,6 +123,7 @@ class Window(QMainWindow):
 
       self.changeTypeCoding(datas,self.IS_BINARY)
       self.changeTypeCoding(self.hopfieldMatrix.datas,self.IS_BINARY)
+      
       self.hopfieldMatrix.learnFromDatas()
 
       for data in datas:
@@ -123,7 +141,6 @@ class Window(QMainWindow):
       self.loadPatternsAndTest()
       self.drawDatas()
 
-
     def binaryComboBoxChanged(self,idx):
       value = self.binaryComboBox.itemText(idx)
       
@@ -132,35 +149,24 @@ class Window(QMainWindow):
       elif (value == 'Bipolaire'):
         self.IS_BINARY = False
 
-      self.loadPatternsAndTest()
-      self.drawDatas()
+      self.update()
 
     def changeTypeCoding(self,datas,isBinary):
       lngVector  = len(datas[0])
 
       for vector in datas :
         for i in range(lngVector):
-          if(isBinary and vector[i] == -1):
+          if(isBinary and vector[i] == -1.0):
             vector[i] = 0.0
-          elif (not isBinary == False and vector[i] == 0):
+          elif (isBinary == False and vector[i] == 0.0):
             vector[i] = -1.0
 
-
-
-
-
-
-
-
-
-
-
-
+    def update(self):
+      self.loadPatternsAndTest()
+      self.drawDatas()
 
 
 app    = QApplication(sys.argv)
 window = Window()
-
-
 
 sys.exit(app.exec_())
