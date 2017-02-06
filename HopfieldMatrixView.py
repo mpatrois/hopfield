@@ -3,11 +3,11 @@ from DrawPattern import *
 
 class HopfieldMatrixView(QGraphicsView):    
 
-  def __init__(self,hopfieldMatrix,nbCol,size,mainWindow):
+  def __init__(self,hopfieldMatrix,size,mainWindow):
     QGraphicsView.__init__(self)
     
     self.hopfieldMatrix = hopfieldMatrix
-    self.nbCol = nbCol
+    self.nbCol = hopfieldMatrix.nbCol
     self.size  = size
 
     self.scene = QGraphicsScene(self)

@@ -15,13 +15,18 @@ from Pattern            import Pattern
 from PatternView        import PatternView
 
 SQUARE_WIDTH = 13
-NB_COLUMN = 5
 
+
+fileName = 'patternsCreated/letters.json'
+fileName = 'patternsCreated/bigNumbers.json'
+fileName = 'patternsCreated/lettersBig.json'
+fileName = 'patternsCreated/lettersBig2.json'
 
 class Window(QMainWindow):
 
     def __init__(self):
       QMainWindow.__init__(self)
+     
       self.setWindowTitle("Réseau de Hopfield")
       self.setWindowState(Qt.WindowMaximized)
       self.setWindowState(Qt.WindowMaximized)
@@ -34,13 +39,14 @@ class Window(QMainWindow):
       self.patternsView = []
       
       self.hopfieldMatrix = HopfieldMatrix()
-      self.hopfieldMatrix.loadDataByFile('data/data.json')
+      self.hopfieldMatrix.loadDataByFile(fileName)
+      self.NB_COLUMN = self.hopfieldMatrix.nbCol
 
-      self.hopfieldMatrixView = HopfieldMatrixView(self.hopfieldMatrix,NB_COLUMN,SQUARE_WIDTH,self)
+      self.hopfieldMatrixView = HopfieldMatrixView(self.hopfieldMatrix,SQUARE_WIDTH,self)
 
       canvasPatterns = QGraphicsView()
-      self.hopfieldMatrixView.setMaximumHeight(SQUARE_WIDTH * NB_COLUMN + 2)
-      self.hopfieldMatrixView.setMinimumHeight(SQUARE_WIDTH * NB_COLUMN + 2)
+      self.hopfieldMatrixView.setMaximumHeight(SQUARE_WIDTH * self.NB_COLUMN + 2)
+      self.hopfieldMatrixView.setMinimumHeight(SQUARE_WIDTH * self.NB_COLUMN + 2)
      
       self.scenePatterns = QGraphicsScene(canvasPatterns)
       canvasPatterns.setScene(self.scenePatterns)
@@ -49,6 +55,8 @@ class Window(QMainWindow):
       widget = QWidget(self)
       layout = QGridLayout(widget)
       self.setCentralWidget(widget)
+
+
 
 
       noiseLabel = QLabel('Taux de bruitage (%)')
@@ -98,13 +106,16 @@ class Window(QMainWindow):
       
       for patternIndex, patternView in enumerate(self.patternsView):
        y = patternIndex * ( patternView.getHeight() + SQUARE_WIDTH )
-       patternView.addStepsToScene(self.scenePatterns,30,y + SQUARE_WIDTH * NB_COLUMN +2*SQUARE_WIDTH)
+       patternView.addStepsToScene(self.scenePatterns,30,y + SQUARE_WIDTH *  self.NB_COLUMN +2*SQUARE_WIDTH)
 
 
     def generateDatasFromFile(self):
       datas = []
-      with open('data/testPatterns.json') as data_file:    
-        datas = json.load(data_file)
+      with open(fileName) as data_file:    
+        jsonData = json.load(data_file) 
+        datas = jsonData['patterns']
+        nbCol = jsonData['nb_col']
+        self.NB_COLUMN = nbCol
       return datas  
 
     def generateDatasRamdomly(self):
@@ -133,7 +144,7 @@ class Window(QMainWindow):
 
       self.patternsView = []
       for pattern in self.patterns:
-        patternView = PatternView(pattern,NB_COLUMN,SQUARE_WIDTH)
+        patternView = PatternView(pattern,self.NB_COLUMN,SQUARE_WIDTH)
         self.patternsView.append(patternView)
 
     def changeNoise(self,newNoise):

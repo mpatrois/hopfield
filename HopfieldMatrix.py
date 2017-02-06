@@ -7,10 +7,16 @@ class HopfieldMatrix:
 		self.datas   = []
 		self.datasActived = []
 		self.matrix  = numpy.zeros( (0,0) )
+		self.nbCol = 5
 
 	def loadDataByFile(self,fileName):
-		with open(fileName) as data_file: 
-			self.datas = json.load(data_file)
+		with open(fileName) as data_file:
+			dataJson = json.load(data_file)
+			self.datas = dataJson['patterns']
+			self.nbCol = dataJson['nb_col']
+
+			# self.datas = json.load(data_file)
+		
 		self.datasActived = []
 
 		for i in range(len(self.datas)):
