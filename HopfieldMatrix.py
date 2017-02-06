@@ -32,3 +32,6 @@ class HopfieldMatrix:
 				self.matrix += v * v.T # v.T = numpy.transpose(v)
 		
 		self.matrix /= lng
+
+	def nbRow(self):
+		return int(len(self.datas[0])/self.nbCol)

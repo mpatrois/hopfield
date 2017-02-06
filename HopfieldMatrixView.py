@@ -16,12 +16,15 @@ class HopfieldMatrixView(QGraphicsView):
     self.mainWindow = mainWindow
 
   def addDataLearnedToScene(self):
+
+    patternWidth =  self.size * self.nbCol
+    patternHeight =  self.size * self.hopfieldMatrix.nbRow()
+
     for idx,data in enumerate(self.hopfieldMatrix.datas):
       xStep =  idx * (self.size * self.nbCol + 10)
       addPatternToScene(self.scene,data,xStep,0,self.nbCol,self.size)
       if(not self.hopfieldMatrix.datasActived[idx]):
-        squareSize =  self.size*self.nbCol
-        addRectToScene(self.scene,xStep,0,squareSize,squareSize,'black')
+        addRectToScene(self.scene,xStep,0,patternWidth,patternHeight,'black')
 
   def mousePressEvent(self,event):
     posMouse = self.mapToScene(event.pos())
@@ -33,10 +36,11 @@ class HopfieldMatrixView(QGraphicsView):
 
   def getIndexOfPattern(self,pos):
     nbPattern = len(self.hopfieldMatrix.datas)
+    patternWidth =  self.size * self.nbCol
+    patternHeight =  self.size * self.hopfieldMatrix.nbRow()
     for idx in range(nbPattern):
       xPattern   = idx * (self.size * self.nbCol + 10)
-      patternWidth =  self.size * self.nbCol
-      rectPattern = QRect(xPattern,0,patternWidth,patternWidth)
+      rectPattern = QRect(xPattern,0,patternWidth,patternHeight)
       if(rectPattern.contains(pos.toPoint())):
         return idx
 

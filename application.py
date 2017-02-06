@@ -21,6 +21,8 @@ fileName = 'patternsCreated/letters.json'
 fileName = 'patternsCreated/bigNumbers.json'
 fileName = 'patternsCreated/lettersBig.json'
 fileName = 'patternsCreated/lettersBig2.json'
+fileName = 'patternsCreated/nombreAssymetrique.json'
+fileName = 'patternsCreated/lettersAssymetrique.json'
 
 class Window(QMainWindow):
 
@@ -41,12 +43,13 @@ class Window(QMainWindow):
       self.hopfieldMatrix = HopfieldMatrix()
       self.hopfieldMatrix.loadDataByFile(fileName)
       self.NB_COLUMN = self.hopfieldMatrix.nbCol
+      self.NB_ROW = self.hopfieldMatrix.nbRow()
 
       self.hopfieldMatrixView = HopfieldMatrixView(self.hopfieldMatrix,SQUARE_WIDTH,self)
 
       canvasPatterns = QGraphicsView()
-      self.hopfieldMatrixView.setMaximumHeight(SQUARE_WIDTH * self.NB_COLUMN + 2)
-      self.hopfieldMatrixView.setMinimumHeight(SQUARE_WIDTH * self.NB_COLUMN + 2)
+      # self.hopfieldMatrixView.setMaximumHeight(SQUARE_WIDTH * self.NB_COLUMN + 2)
+      self.hopfieldMatrixView.setMinimumHeight(SQUARE_WIDTH * self.NB_ROW + SQUARE_WIDTH)
      
       self.scenePatterns = QGraphicsScene(canvasPatterns)
       canvasPatterns.setScene(self.scenePatterns)
