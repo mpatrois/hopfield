@@ -303,45 +303,74 @@ class Window(QMainWindow):
         self.canvasPatterns.setScene(self.scenePatterns)
 
         self.canvasPatterns.mouseMoveEvent = self.mouseMoveEvent
-        self.canvasPatterns.mousePressEvent = self.mousePressEvent
+        self.canvasPatterns.mousePressEvent = self.mouseMoveEvent
 
         self.currentPattern = []
         self.patterns = []
+
+        rowLabel = QLabel('Nombre de ligne')
+        rowLabel.setMaximumWidth(200)
+        colLabel = QLabel('Nombre de colonne')
+        colLabel.setMaximumWidth(200)
+        fileNameLabel = QLabel('Nom du fichier')
+        fileNameLabel.setMaximumWidth(200)
+        
+
+        nameFileSaved = QLineEdit()
+        nameFileSaved.setMaximumWidth(200)
+        
 
         spinBoxNBColumn = QSpinBox()
         spinBoxNBColumn.setMaximum (20)
         spinBoxNBColumn.setMinimum (2)
         spinBoxNBColumn.setValue (self.NB_COLUMN)
         spinBoxNBColumn.valueChanged.connect(self.changeNBColumn)
+        spinBoxNBColumn.setMaximumWidth(200)
 
         spinBoxNBRow = QSpinBox()
         spinBoxNBRow.setMaximum (20)
         spinBoxNBRow.setMinimum (2)
         spinBoxNBRow.setValue (self.NB_ROW)
         spinBoxNBRow.valueChanged.connect(self.changeNBRow)
+        spinBoxNBRow.setMaximumWidth(200)
 
         buttonAddPattern = QPushButton()
-        buttonAddPattern.setText("Ajouter pattern")
-        buttonAddPattern.clicked.connect(self.addPattern)
+        buttonAddPattern.setText("Ajouter le patron courant")
+        buttonAddPattern.clicked.connect(self.addPattern)  
+        buttonAddPattern.setMaximumWidth(200)
+
+        buttonExportPatterns = QPushButton()
+        buttonExportPatterns.setText("Exporter les patterns")
+        buttonExportPatterns.clicked.connect(self.addPattern)
 
         self.hopfieldMatrix = HopfieldMatrix()
         self.hopfieldMatrixView = HopfieldMatrixView(self.hopfieldMatrix,self.NB_COLUMN,SQUARE_WIDTH,self)
         self.hopfieldMatrixView.mousePressEvent = self.mousePressEventHopfiedl
 
         widget = QWidget(self)
+
         layout = QGridLayout(widget)
         self.setCentralWidget(widget)
 
-        layout.addWidget(spinBoxNBColumn,1,1)
-        layout.addWidget(spinBoxNBRow,1,2)
-        layout.addWidget(buttonAddPattern,1,3)
+        
+        layout.addWidget(fileNameLabel,1,1)
+        layout.addWidget(nameFileSaved,2,1)
 
-        layout.addWidget(self.canvasPatterns,3,1,1,2)
-        layout.addWidget(self.hopfieldMatrixView ,2,1,1,2)
+        layout.addWidget(buttonExportPatterns,2,2)
+        
 
+        layout.addWidget(colLabel,3,1)
+        layout.addWidget(spinBoxNBColumn,4,1)
+        
+        layout.addWidget(rowLabel,3,2)
+        layout.addWidget(spinBoxNBRow,4,2)
+        layout.addWidget(buttonAddPattern,4,3)
+        
+        layout.addWidget(self.canvasPatterns,5,1,1,4)
+        
+        layout.addWidget(self.hopfieldMatrixView,6,1,1,4)
 
-        self.initPattern()
-        self.drawData()
+        self.update()
 
 
     def changeNBColumn(self,newValue):
@@ -365,9 +394,12 @@ class Window(QMainWindow):
             self.currentPattern.append(-1.0)
     
     def update(self):
-        self.hopfieldMatrixView.nbCol = NB_COLUMN
+        self.hopfieldMatrixView.nbCol = self.NB_COLUMN
         self.initPattern()
+        self.patterns = []
+        self.hopfieldMatrix.datas = self.patterns
         self.drawData()
+        self.hopfieldMatrixView.drawLearnedPatterns()
 
 
     def mouseMoveEvent(self,event):
@@ -375,11 +407,6 @@ class Window(QMainWindow):
         
         col = int(posMouse.x()/SQUARE_WIDTH)
         lin = int(posMouse.y()/SQUARE_WIDTH)
-
-        # print(lin,col)
-        # print(posMouse.y(),posMouse.x())
-        # print(posMouse.y(),posMouse.x())
-        # print("_")
 
         if(col >= 0 and col < self.NB_COLUMN and lin >= 0 and lin < self.NB_ROW):
             if event.buttons() == Qt.LeftButton:
