@@ -10,7 +10,7 @@ class Pattern:
     self.minValue = 0.0 if isBinary else -1.0;
     self.hopfieldMatrix = hopfieldMatrix;
 
-  def calculAllSteps(self,errorPercentage):
+  def calculAllSteps(self,errorPercentage,typeFunction):
 
     matrixHop = self.hopfieldMatrix.matrix
     data = self.makeNoise(errorPercentage)
@@ -21,14 +21,14 @@ class Pattern:
     out = numpy.dot(start,matrixHop)
     
     for i in range(len(out)):
-      out[i] =  self.transferFunction(out[i],'second')
+      out[i] =  self.transferFunction(out[i],typeFunction)
     
     self.steps.append(out)
       
     while( self.isStable(out) == 0 ):
       out = numpy.dot(out,matrixHop) #multiply matrix out by matrixHop
       for i in range(len(out)):
-        out[i] =  self.transferFunction(out[i],'second')
+        out[i] =  self.transferFunction(out[i],typeFunction)
       self.steps.append(out)
 
 
@@ -52,6 +52,8 @@ class Pattern:
         return self.maxValue
       else :
         return number
+
+    return 12
 
   def errorPercentage(self,wantedData):
     nbErrors = 0

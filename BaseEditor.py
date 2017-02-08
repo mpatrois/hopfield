@@ -116,9 +116,9 @@ class Window(QMainWindow):
 
         dataToExport = {}
         dataToExport['nb_col'] = self.NB_COLUMN
-        dataToExport['patterns'] = self.hopfieldMatrix.datas
+        dataToExport['patterns'] = self.hopfieldMatrix.dataToLearn
 
-        # print (self.hopfieldMatrix.datas)
+        # print (self.hopfieldMatrix.dataToLearn)
         
         with open('patternsCreated/'+nameFile+'.json', 'w') as outfile:
             json.dump(dataToExport, outfile)
@@ -139,7 +139,7 @@ class Window(QMainWindow):
         self.hopfieldMatrixView.nbCol = self.NB_COLUMN
         self.initPattern()
         self.patterns = []
-        self.hopfieldMatrix.datas = self.patterns
+        self.hopfieldMatrix.dataToLearn = self.patterns
         self.drawData()
         self.hopfieldMatrixView.drawLearnedPatterns()
 
@@ -160,10 +160,10 @@ class Window(QMainWindow):
 
     def addPattern(self):
         self.patterns.append(self.currentPattern[:])
-        self.hopfieldMatrix.datas = self.patterns
+        self.hopfieldMatrix.dataToLearn = self.patterns
         self.hopfieldMatrixView.datas = []
-        for i in range(len(self.hopfieldMatrix.datas)):
-            self.hopfieldMatrix.datasActived.append(True)
+        for i in range(len(self.hopfieldMatrix.dataToLearn)):
+            self.hopfieldMatrix.dataToLearnActived.append(True)
 
         self.hopfieldMatrixView.drawLearnedPatterns()
 
@@ -173,7 +173,7 @@ class Window(QMainWindow):
         indexPattern = self.hopfieldMatrixView.getIndexOfPattern(posMouse)
 
         if(indexPattern!=-1):
-            self.hopfieldMatrix.datas.pop(indexPattern)
+            self.hopfieldMatrix.dataToLearn.pop(indexPattern)
             self.hopfieldMatrixView.drawLearnedPatterns()
 
 
