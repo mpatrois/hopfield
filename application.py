@@ -34,24 +34,20 @@ class Window(QMainWindow):
       self.hopfieldMatrix = HopfieldMatrix()
       self.hopfieldMatrix.loadDataByFile(self.fileName)
 
+      hopfieldLabel = QLabel('Patrons appris :')
+      # self.canvasLearnedData = QGraphicsView()
+
+      patternsLabel = QLabel('Patrons testés :')
+      # self.canvasPatterns = QGraphicsView()
+
       self.hopfieldMatrixView = HopfieldMatrixView(self.hopfieldMatrix,SQUARE_WIDTH,self)
-
-      self.canvasPatterns = QGraphicsView()
-      
-     
-      self.scenePatterns = QGraphicsScene(self.canvasPatterns)
-      self.canvasPatterns.setScene(self.scenePatterns)
-
 
       widget = QWidget(self)
       layout = QGridLayout(widget)
       self.setCentralWidget(widget)
 
+      
       noiseLabel = QLabel('Taux de bruitage (%)')
-      hopfieldLabel = QLabel('Patrons appris :')
-      patternsLabel = QLabel('Patrons testés :')
-      
-      
       spinBoxNoise = QSpinBox()
       spinBoxNoise.setMaximum (100)
       spinBoxNoise.setMinimum (0)
@@ -59,8 +55,6 @@ class Window(QMainWindow):
 
 
       typeCodeLabel = QLabel('Codage bivalué')
-      
-
       self.binaryComboBox = QComboBox()
       self.binaryComboBox.addItems(["Bipolaire","Binaire"])
       self.binaryComboBox.currentIndexChanged.connect(self.binaryComboBoxChanged)
@@ -90,21 +84,17 @@ class Window(QMainWindow):
       layout.addWidget(spinBoxNoise,1,4)
       
       layout.addWidget(hopfieldLabel,3,1)
-      layout.addWidget(self.hopfieldMatrixView,3,2,1,10)
-      
+      layout.addWidget(self.hopfieldMatrixView.canvasLearnedData,3,2,1,10)
       
       layout.addWidget(patternsLabel,4,1,1,2)
-      layout.addWidget(self.canvasPatterns,4,2,1,10)
+      layout.addWidget(self.hopfieldMatrixView.canvasTestedData,4,2,1,10)
       
       
       self.update()
 
-      
-
     def drawDatas(self):
       self.hopfieldMatrixView.drawLearnedPatterns()
-      self.canvasPatterns.viewport().update()
-      self.hopfieldMatrixView.drawTestedPatterns(self.scenePatterns)
+      self.hopfieldMatrixView.drawTestedPatterns()
 
 
     def changeNoise(self,newNoise):

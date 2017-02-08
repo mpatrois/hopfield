@@ -24,6 +24,9 @@ class Window(QMainWindow):
         self.NB_COLUMN = 5
         self.NB_ROW = 5
 
+        
+        self.canvasHopfield = QGraphicsView()
+
         self.canvasPatterns = QGraphicsView()
         self.scenePatterns = QGraphicsScene(self.canvasPatterns)
         self.canvasPatterns.setScene(self.scenePatterns)
@@ -34,6 +37,10 @@ class Window(QMainWindow):
         self.currentPattern = []
         self.patterns = []
 
+
+        self.nameFileSaved = QLineEdit()
+        self.nameFileSaved.setMaximumWidth(200)
+
         rowLabel = QLabel('Nombre de ligne')
         rowLabel.setMaximumWidth(200)
         colLabel = QLabel('Nombre de colonne')
@@ -42,8 +49,7 @@ class Window(QMainWindow):
         fileNameLabel.setMaximumWidth(200)
         
 
-        self.nameFileSaved = QLineEdit()
-        self.nameFileSaved.setMaximumWidth(200)
+        
         
 
         spinBoxNBColumn = QSpinBox()
@@ -96,7 +102,7 @@ class Window(QMainWindow):
         
         layout.addWidget(self.canvasPatterns,5,1,1,4)
         
-        layout.addWidget(self.hopfieldMatrixView,6,1,1,4)
+        layout.addWidget(self.hopfieldMatrixView.canvasLearnedData,6,1,1,4)
 
         self.update()
 

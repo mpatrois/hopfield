@@ -2,33 +2,44 @@ import numpy
 from DrawPattern import *
 from PatternView import *
 
-class HopfieldMatrixView(QGraphicsView):    
+class HopfieldMatrixView():    
 
   def __init__(self,hopfieldMatrix,size,mainWindow):
-    QGraphicsView.__init__(self)
     
     self.hopfieldMatrix = hopfieldMatrix
-    # self.hopfieldMatrix.nbCol = hopfieldMatrix.nbCol
     self.size  = size
 
-    self.scene = QGraphicsScene(self)
-    self.setScene(self.scene)
+    self.canvasLearnedData = QGraphicsView()
+    self.canvasTestedData = QGraphicsView()
+
+    self.sceneLearnedData = QGraphicsScene(self.canvasLearnedData)
+    self.canvasLearnedData.setScene(self.sceneLearnedData)
+    self.canvasLearnedData.mousePressEvent = self.mousePressEventCanvasLearnedData
+
+    self.sceneTestedData = QGraphicsScene(self.canvasTestedData)
+    self.canvasTestedData.setScene(self.sceneTestedData)
 
     self.mainWindow = mainWindow
 
-  def addDataLearnedToScene(self):
+  def drawLearnedPatterns(self):
+
+    self.canvasLearnedData.setMinimumHeight(self.size * self.hopfieldMatrix.nbRow() + self.size)
+    # self.canvasLearnedData.setMaximumHeight(self.size * self.hopfieldMatrix.nbRow() + self.size)
+
+    self.sceneLearnedData.clear()
+    self.canvasLearnedData.viewport().update()
 
     patternWidth =  self.size * self.hopfieldMatrix.nbCol
     patternHeight =  self.size * self.hopfieldMatrix.nbRow()
 
     for idx,data in enumerate(self.hopfieldMatrix.dataToLearn):
       xStep =  idx * (self.size * self.hopfieldMatrix.nbCol + 10)
-      addPatternToScene(self.scene,data,xStep,0,self.hopfieldMatrix.nbCol,self.size)
+      addPatternToScene(self.sceneLearnedData,data,xStep,0,self.hopfieldMatrix.nbCol,self.size)
       if(not self.hopfieldMatrix.dataToLearnActived[idx]):
-        addRectToScene(self.scene,xStep,0,patternWidth,patternHeight,'black')
+        addRectToScene(self.sceneLearnedData,xStep,0,patternWidth,patternHeight,'black')
 
-  def mousePressEvent(self,event):
-    posMouse = self.mapToScene(event.pos())
+  def mousePressEventCanvasLearnedData(self,event):
+    posMouse = self.canvasLearnedData.mapToScene(event.pos())
     indexPattern = self.getIndexOfPattern(posMouse)
 
     if(indexPattern!=-1):
@@ -47,22 +58,16 @@ class HopfieldMatrixView(QGraphicsView):
 
     return -1
 
-  def drawLearnedPatterns(self):
-    self.setMinimumHeight(self.size * self.hopfieldMatrix.nbRow() + self.size)
-    self.setMaximumHeight(self.size * self.hopfieldMatrix.nbRow() + self.size)
 
-    self.viewport().update()
-
-    self.scene.clear()
-    self.addDataLearnedToScene()
-
-  def drawTestedPatterns(self,scenePatterns):
+  def drawTestedPatterns(self):
     patternsView = []
-    scenePatterns.clear()
+    self.sceneTestedData.clear()
+    self.canvasTestedData.viewport().update()
+
     for pattern in self.hopfieldMatrix.patternsTested:
       patternView = PatternView(pattern,self.hopfieldMatrix.nbCol, self.size)
       patternsView.append(patternView)
     
     for patternIndex, patternView in enumerate(patternsView):
       y = patternIndex * ( patternView.getHeight() +  self.size )
-      patternView.addStepsToScene(scenePatterns,30,y +  self.size *  self.hopfieldMatrix.nbCol +2* self.size)
+      patternView.addStepsToScene(self.sceneTestedData,30,y +  self.size *  self.hopfieldMatrix.nbCol +2* self.size)
