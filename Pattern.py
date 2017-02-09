@@ -10,6 +10,25 @@ class Pattern:
     self.minValue = 0.0 if isBinary else -1.0;
     self.hopfieldMatrix = hopfieldMatrix;
 
+  # def calculAllSteps(self,errorPercentage,typeFunction):
+
+  #   matrixHop = self.hopfieldMatrix.matrix
+  #   data = self.makeNoise(errorPercentage)
+    
+  #   start  = numpy.array(data)
+  #   self.steps.append(start)
+    
+  #   out = numpy.dot(start,matrixHop)
+    
+  #   for i in range(len(out)):
+  #     out[i] =  self.transferFunction(out[i],typeFunction)
+          
+  #   while( self.isStable(out) == 0 ):
+  #     out = numpy.dot(out,matrixHop) #multiply matrix out by matrixHop
+  #     for i in range(len(out)):
+  #       out[i] =  self.transferFunction(out[i],typeFunction)
+  #     self.steps.append(out)
+
   def calculAllSteps(self,errorPercentage,typeFunction):
 
     matrixHop = self.hopfieldMatrix.matrix
@@ -17,19 +36,54 @@ class Pattern:
     
     start  = numpy.array(data)
     self.steps.append(start)
-    
-    out = numpy.dot(start,matrixHop)
-    
-    for i in range(len(out)):
-      out[i] =  self.transferFunction(out[i],typeFunction)
-    
-    self.steps.append(out)
+              
+    while(True):
+      out = numpy.dot(self.getLastStep(),matrixHop) #multiply matrix out by matrixHop
       
-    while( self.isStable(out) == 0 ):
-      out = numpy.dot(out,matrixHop) #multiply matrix out by matrixHop
-      for i in range(len(out)):
-        out[i] =  self.transferFunction(out[i],typeFunction)
+      self.sign(out,typeFunction)
       self.steps.append(out)
+      
+      if(self.isStable(out) == 1 ):
+        break 
+
+  def calculAllStepsAsync(self,errorPercentage,typeFunction):
+
+    matrixHop = self.hopfieldMatrix.matrix
+    data = self.makeNoise(errorPercentage)
+    
+    start  = numpy.array(data)
+    self.steps.append(start)
+
+    sequence = [i for i in range(len(self.original))]
+    # sequence = [2,1,0]
+    sequenceToFollow = numpy.copy(sequence)
+    # random.shuffle(sequenceToFollow)
+
+    stepSequences = []
+    stop = False
+    
+    while ( self.isStableAsync(stepSequences,len(self.original) ) == 0 and stop == False):
+
+      stepSequence = []
+      out = None
+      sequenceToFollow = numpy.copy(sequence).tolist()
+      
+      while( len(sequenceToFollow) > 0 ):
+        lastStep = self.getLastStep()
+        out =  numpy.copy(lastStep)
+        product = numpy.dot(out,matrixHop) #multiply matrix out by matrixHop
+        
+        idxToUpdate = sequenceToFollow.pop()
+        out[idxToUpdate] = product[idxToUpdate] 
+
+        self.sign(out,typeFunction)
+        stepSequence.append(out)
+
+        self.steps.append(out)
+      
+      stepSequences.append(stepSequence)
+
+
 
 
   def isStable(self,lastStep):
@@ -39,6 +93,20 @@ class Pattern:
           return True
     
     return False
+
+  def isStableAsync(self,stepSequences,nbSteps):
+    if(len(stepSequences)>2):
+      lastStepSequence = stepSequences[len(stepSequences)-1]
+      anteLastStepSequence = stepSequences[len(stepSequences)-2]
+
+      for i in range(len(lastStepSequence)):
+        stepsOne = lastStepSequence[i]
+        stepsTwo = anteLastStepSequence[i]
+        if( numpy.all( numpy.sign(stepsOne) == numpy.sign(stepsTwo) )):
+          return True
+
+    else:
+      return False
 
   def transferFunction(self,number,typeFunction):
     if (typeFunction == 'first') :
@@ -54,6 +122,10 @@ class Pattern:
         return number
 
     return 12
+
+  def sign (self,arrayToSign,typeFunction):
+    for i in range(len(arrayToSign)):
+      arrayToSign[i] =  self.transferFunction(arrayToSign[i],typeFunction)
 
   def errorPercentage(self,wantedData):
     nbErrors = 0
@@ -101,7 +173,7 @@ class Pattern:
 
     errors = [array.pop() for i in range(int(nbErrorsToMake))]
       
-    data = self.original[:]
+    data = numpy.copy(self.original)
 
     while len(errors)>0:
       idx = errors.pop()

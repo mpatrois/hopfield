@@ -24,8 +24,8 @@ class HopfieldMatrixView():
   def drawLearnedPatterns(self):
 
     self.canvasLearnedData.setMinimumHeight(self.size * self.hopfieldMatrix.nbRow() + self.size)
-    # self.canvasLearnedData.setMaximumHeight(self.size * self.hopfieldMatrix.nbRow() + self.size)
-
+    self.canvasLearnedData.setMaximumHeight(self.size * self.hopfieldMatrix.nbRow() + self.size)
+    self.canvasLearnedData.viewport().update()
     self.sceneLearnedData.clear()
     self.canvasLearnedData.viewport().update()
 
@@ -37,6 +37,19 @@ class HopfieldMatrixView():
       addPatternToScene(self.sceneLearnedData,data,xStep,0,self.hopfieldMatrix.nbCol,self.size)
       if(not self.hopfieldMatrix.dataToLearnActived[idx]):
         addRectToScene(self.sceneLearnedData,xStep,0,patternWidth,patternHeight,'black')
+
+  def drawTestedPatterns(self):
+    patternsView = []
+    self.sceneTestedData.clear()
+    self.canvasTestedData.viewport().update()
+
+    for pattern in self.hopfieldMatrix.patternsTested:
+      patternView = PatternView(pattern,self.hopfieldMatrix.nbCol, self.size)
+      patternsView.append(patternView)
+    
+    for patternIndex, patternView in enumerate(patternsView):
+      y = patternIndex * ( patternView.getHeight() +  self.size )
+      patternView.addStepsToScene(self.sceneTestedData,30,y +  self.size *  self.hopfieldMatrix.nbCol +2* self.size)
 
   def mousePressEventCanvasLearnedData(self,event):
     posMouse = self.canvasLearnedData.mapToScene(event.pos())
@@ -59,15 +72,4 @@ class HopfieldMatrixView():
     return -1
 
 
-  def drawTestedPatterns(self):
-    patternsView = []
-    self.sceneTestedData.clear()
-    self.canvasTestedData.viewport().update()
-
-    for pattern in self.hopfieldMatrix.patternsTested:
-      patternView = PatternView(pattern,self.hopfieldMatrix.nbCol, self.size)
-      patternsView.append(patternView)
-    
-    for patternIndex, patternView in enumerate(patternsView):
-      y = patternIndex * ( patternView.getHeight() +  self.size )
-      patternView.addStepsToScene(self.sceneTestedData,30,y +  self.size *  self.hopfieldMatrix.nbCol +2* self.size)
+  

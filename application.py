@@ -15,7 +15,7 @@ from HopfieldMatrixView import HopfieldMatrixView
 from Pattern            import Pattern
 from PatternView        import PatternView
 
-SQUARE_WIDTH = 10
+SQUARE_WIDTH = 12
 
 class Window(QMainWindow):
 
@@ -35,32 +35,24 @@ class Window(QMainWindow):
       self.hopfieldMatrix.loadDataByFile(self.fileName)
 
       hopfieldLabel = QLabel('Patrons appris :')
-      # self.canvasLearnedData = QGraphicsView()
-
       patternsLabel = QLabel('Patrons testés :')
-      # self.canvasPatterns = QGraphicsView()
-
       self.hopfieldMatrixView = HopfieldMatrixView(self.hopfieldMatrix,SQUARE_WIDTH,self)
 
       widget = QWidget(self)
       layout = QGridLayout(widget)
       self.setCentralWidget(widget)
 
-      
       noiseLabel = QLabel('Taux de bruitage (%)')
       spinBoxNoise = QSpinBox()
       spinBoxNoise.setMaximum (100)
       spinBoxNoise.setMinimum (0)
       spinBoxNoise.valueChanged.connect(self.changeNoise)
 
-
       typeCodeLabel = QLabel('Codage bivalué')
       self.binaryComboBox = QComboBox()
       self.binaryComboBox.addItems(["Bipolaire","Binaire"])
       self.binaryComboBox.currentIndexChanged.connect(self.binaryComboBoxChanged)
       
-
-
       typeFunctionLabel = QLabel('Fonction de transfert')
       self.typesFunctionComboBox = QComboBox()
       self.typesFunctionComboBox.addItems(self.hopfieldMatrix.typesFunctions)
@@ -89,13 +81,11 @@ class Window(QMainWindow):
       layout.addWidget(patternsLabel,4,1,1,2)
       layout.addWidget(self.hopfieldMatrixView.canvasTestedData,4,2,1,10)
       
-      
       self.update()
 
     def drawDatas(self):
       self.hopfieldMatrixView.drawLearnedPatterns()
       self.hopfieldMatrixView.drawTestedPatterns()
-
 
     def changeNoise(self,newNoise):
       self.hopfieldMatrix.NOISE = newNoise

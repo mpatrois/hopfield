@@ -27,8 +27,6 @@ class PatternView:
 
     self.addPercentage(scene,x,y)
     self.addEnergy(scene,x,y)
-    
-
 
   def addPercentage(self,scene,x,y):
     errorPercentage = self.pattern.errorPercentage(self.pattern.getFirstStep())

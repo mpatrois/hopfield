@@ -43,7 +43,21 @@ class HopfieldMatrix:
 		self.matrix /= lng
 		
 		for i in range(lng):
-			self.matrix[i,i] = 0
+			self.matrix[i][i] = 0
+
+		# self.matrix[0][0] = 0 
+		# self.matrix[0][1] = 1.0
+		# self.matrix[0][2] = 1.0
+
+		# self.matrix[1][0] = 1.0 
+		# self.matrix[1][1] = 0.0
+		# self.matrix[1][2] = -1.0
+	
+		# self.matrix[2][0] = 1.0 
+		# self.matrix[2][1] = -1.0
+		# self.matrix[2][2] = 0.0
+
+	
 
 	def nbRow(self):
 		if(len(self.dataToLearn) > 1 ):

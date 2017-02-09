@@ -25,7 +25,7 @@ class Window(QMainWindow):
         self.NB_ROW = 5
 
         
-        self.canvasHopfield = QGraphicsView()
+        # self.canvasHopfield = QGraphicsView()
 
         self.canvasPatterns = QGraphicsView()
         self.scenePatterns = QGraphicsScene(self.canvasPatterns)
@@ -54,14 +54,14 @@ class Window(QMainWindow):
 
         spinBoxNBColumn = QSpinBox()
         spinBoxNBColumn.setMaximum (20)
-        spinBoxNBColumn.setMinimum (2)
+        spinBoxNBColumn.setMinimum (1)
         spinBoxNBColumn.setValue (self.NB_COLUMN)
         spinBoxNBColumn.valueChanged.connect(self.changeNBColumn)
         spinBoxNBColumn.setMaximumWidth(200)
 
         spinBoxNBRow = QSpinBox()
         spinBoxNBRow.setMaximum (20)
-        spinBoxNBRow.setMinimum (2)
+        spinBoxNBRow.setMinimum (1)
         spinBoxNBRow.setValue (self.NB_ROW)
         spinBoxNBRow.valueChanged.connect(self.changeNBRow)
         spinBoxNBRow.setMaximumWidth(200)
@@ -79,7 +79,7 @@ class Window(QMainWindow):
         self.NB_COLUMN = self.hopfieldMatrix.nbCol
 
         self.hopfieldMatrixView = HopfieldMatrixView(self.hopfieldMatrix,SQUARE_WIDTH,self)
-        self.hopfieldMatrixView.mousePressEvent = self.mousePressEventHopfiedl
+        self.hopfieldMatrixView.canvasLearnedData.mousePressEvent = self.mousePressEventHopfiedl
 
         widget = QWidget(self)
 
