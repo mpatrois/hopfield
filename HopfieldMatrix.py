@@ -8,6 +8,7 @@ class HopfieldMatrix:
 	def __init__(self):
 		self.IS_BINARY = False
 		self.NOISE = 0
+		self.SYNC = True
 		self.typeFunction ='first'
 		self.typesFunctions = ['first','second','third']
 
@@ -42,23 +43,6 @@ class HopfieldMatrix:
 		
 		self.matrix /= lng
 		
-		for i in range(lng):
-			self.matrix[i][i] = 0
-
-		# self.matrix[0][0] = 0 
-		# self.matrix[0][1] = 1.0
-		# self.matrix[0][2] = 1.0
-
-		# self.matrix[1][0] = 1.0 
-		# self.matrix[1][1] = 0.0
-		# self.matrix[1][2] = -1.0
-	
-		# self.matrix[2][0] = 1.0 
-		# self.matrix[2][1] = -1.0
-		# self.matrix[2][2] = 0.0
-
-	
-
 	def nbRow(self):
 		if(len(self.dataToLearn) > 1 ):
 			return int(len(self.dataToLearn[0])/self.nbCol)
@@ -76,7 +60,10 @@ class HopfieldMatrix:
 
 		for data in self.dataToTest:
 			pattern = Pattern(data,self,self.IS_BINARY)
-			pattern.calculAllSteps(self.NOISE,self.typeFunction)
+			if(self.SYNC):
+				pattern.calculAllSteps(self.NOISE,self.typeFunction)
+			else:
+				pattern.calculAllStepsAsync(self.NOISE,self.typeFunction)
 			self.patternsTested.append(pattern)
 
 	def changeTypeCoding(self,datas,isBinary):

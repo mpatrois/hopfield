@@ -1,8 +1,9 @@
-from PyQt4.QtCore import *
-from PyQt4.QtGui  import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui  import *
+from PyQt5.QtWidgets  import *
 
 blank_color = QBrush(QColor("#E4485D"))
-fill_color = QBrush(QColor("#34344A"))
+fill_color  = QBrush(QColor("#34344A"))
 
 def addPatternToScene(scene,data,x,y,nbCol,size):
     line = 0

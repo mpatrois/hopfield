@@ -10,25 +10,6 @@ class Pattern:
     self.minValue = 0.0 if isBinary else -1.0;
     self.hopfieldMatrix = hopfieldMatrix;
 
-  # def calculAllSteps(self,errorPercentage,typeFunction):
-
-  #   matrixHop = self.hopfieldMatrix.matrix
-  #   data = self.makeNoise(errorPercentage)
-    
-  #   start  = numpy.array(data)
-  #   self.steps.append(start)
-    
-  #   out = numpy.dot(start,matrixHop)
-    
-  #   for i in range(len(out)):
-  #     out[i] =  self.transferFunction(out[i],typeFunction)
-          
-  #   while( self.isStable(out) == 0 ):
-  #     out = numpy.dot(out,matrixHop) #multiply matrix out by matrixHop
-  #     for i in range(len(out)):
-  #       out[i] =  self.transferFunction(out[i],typeFunction)
-  #     self.steps.append(out)
-
   def calculAllSteps(self,errorPercentage,typeFunction):
 
     matrixHop = self.hopfieldMatrix.matrix
@@ -40,7 +21,7 @@ class Pattern:
     while(True):
       out = numpy.dot(self.getLastStep(),matrixHop) #multiply matrix out by matrixHop
       
-      self.sign(out,typeFunction)
+      self.signFunction(out,typeFunction)
       self.steps.append(out)
       
       if(self.isStable(out) == 1 ):
@@ -57,18 +38,17 @@ class Pattern:
     sequence = [i for i in range(len(self.original))]
     # sequence = [2,1,0]
     sequenceToFollow = numpy.copy(sequence)
-    # random.shuffle(sequenceToFollow)
 
-    stepSequences = []
     stop = False
     
-    while ( self.isStableAsync(stepSequences,len(self.original) ) == 0 and stop == False):
+    nbPasTotal = -1
+    while (stop == False):
 
-      stepSequence = []
       out = None
       sequenceToFollow = numpy.copy(sequence).tolist()
+      nbPasSequence = 0
       
-      while( len(sequenceToFollow) > 0 ):
+      while( len(sequenceToFollow) > 0 and  stop == False ):
         lastStep = self.getLastStep()
         out =  numpy.copy(lastStep)
         product = numpy.dot(out,matrixHop) #multiply matrix out by matrixHop
@@ -76,14 +56,23 @@ class Pattern:
         idxToUpdate = sequenceToFollow.pop()
         out[idxToUpdate] = product[idxToUpdate] 
 
-        self.sign(out,typeFunction)
-        stepSequence.append(out)
+        self.signFunction(out,typeFunction)
+        
+        nbPasSequence = nbPasSequence + 1
+        nbPasTotal = nbPasTotal + 1
 
-        self.steps.append(out)
-      
-      stepSequences.append(stepSequence)
+        stepToCompare = nbPasTotal - len(sequence)
 
+        arrayToCompare = []
+        
+        if( stepToCompare >= 0 ):
+          arrayToCompare = self.steps[stepToCompare]
 
+          if( numpy.all( numpy.sign(out) == numpy.sign(arrayToCompare) )):
+            stop = True
+        
+        if(not stop):
+          self.steps.append(out)
 
 
   def isStable(self,lastStep):
@@ -93,20 +82,6 @@ class Pattern:
           return True
     
     return False
-
-  def isStableAsync(self,stepSequences,nbSteps):
-    if(len(stepSequences)>2):
-      lastStepSequence = stepSequences[len(stepSequences)-1]
-      anteLastStepSequence = stepSequences[len(stepSequences)-2]
-
-      for i in range(len(lastStepSequence)):
-        stepsOne = lastStepSequence[i]
-        stepsTwo = anteLastStepSequence[i]
-        if( numpy.all( numpy.sign(stepsOne) == numpy.sign(stepsTwo) )):
-          return True
-
-    else:
-      return False
 
   def transferFunction(self,number,typeFunction):
     if (typeFunction == 'first') :
@@ -123,7 +98,7 @@ class Pattern:
 
     return 12
 
-  def sign (self,arrayToSign,typeFunction):
+  def signFunction (self,arrayToSign,typeFunction):
     for i in range(len(arrayToSign)):
       arrayToSign[i] =  self.transferFunction(arrayToSign[i],typeFunction)
 

@@ -1,8 +1,9 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui  import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui  import *
+from PyQt5.QtWidgets  import *
 
 import sys
 import numpy
@@ -15,7 +16,7 @@ from HopfieldMatrixView import HopfieldMatrixView
 from Pattern            import Pattern
 from PatternView        import PatternView
 
-SQUARE_WIDTH = 12
+SQUARE_WIDTH = 15
 
 class Window(QMainWindow):
 
