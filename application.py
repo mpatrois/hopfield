@@ -49,6 +49,11 @@ class Window(QMainWindow):
       spinBoxNoise.setMinimum (0)
       spinBoxNoise.valueChanged.connect(self.changeNoise)
 
+      typeSynchroneLabel = QLabel('Synchrone')
+      self.asyncComboBox = QComboBox()
+      self.asyncComboBox.addItems(["Oui","Non"])
+      self.asyncComboBox.currentIndexChanged.connect(self.asyncComboBoxChanged)
+      
       typeCodeLabel = QLabel('Codage bivalué')
       self.binaryComboBox = QComboBox()
       self.binaryComboBox.addItems(["Bipolaire","Binaire"])
@@ -75,6 +80,9 @@ class Window(QMainWindow):
       
       layout.addWidget(noiseLabel,1,3)
       layout.addWidget(spinBoxNoise,1,4)
+
+      layout.addWidget(typeSynchroneLabel,1,5)
+      layout.addWidget(self.asyncComboBox,1,6)
       
       layout.addWidget(hopfieldLabel,3,1)
       layout.addWidget(self.hopfieldMatrixView.canvasLearnedData,3,2,1,10)
@@ -105,6 +113,11 @@ class Window(QMainWindow):
     def typesFunctionComboBoxChanged(self,idx):
       value = self.typesFunctionComboBox.itemText(idx)
       self.hopfieldMatrix.typeFunction = value
+      self.update()  
+    
+    def asyncComboBoxChanged(self,idx):
+      value = self.asyncComboBox.itemText(idx)
+      self.hopfieldMatrix.SYNC = ( value == "Oui" )
       self.update()  
 
     def filesComboBoxChanged(self,idx):
