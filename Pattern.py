@@ -10,10 +10,10 @@ class Pattern:
     self.minValue = 0.0 if isBinary else -1.0;
     self.hopfieldMatrix = hopfieldMatrix;
 
-  def calculAllSteps(self,errorPercentage,typeFunction):
+  def calculAllSteps(self,noisePercentage,typeFunction):
 
     matrixHop = self.hopfieldMatrix.matrix
-    data = self.makeNoise(errorPercentage)
+    data = self.makeNoise(noisePercentage)
     
     start  = numpy.array(data)
     self.steps.append(start)
@@ -27,10 +27,10 @@ class Pattern:
       if(self.isStable(out) == 1 ):
         break 
 
-  def calculAllStepsAsync(self,errorPercentage,typeFunction):
+  def calculAllStepsAsync(self,noisePercentage,typeFunction):
 
     matrixHop = self.hopfieldMatrix.matrix
-    data = self.makeNoise(errorPercentage)
+    data = self.makeNoise(noisePercentage)
     
     start  = numpy.array(data)
     self.steps.append(start)

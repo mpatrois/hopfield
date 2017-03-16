@@ -9,7 +9,7 @@ class HopfieldMatrix:
 		self.IS_BINARY = False
 		self.NOISE = 0
 		self.SYNC = True
-		self.typeFunction ='first'
+		self.typeFunction ='second'
 		self.typesFunctions = ['first','second','third']
 
 		self.dataToLearn   = []
@@ -27,8 +27,11 @@ class HopfieldMatrix:
 			self.dataToLearn = dataJson['patterns']
 			self.nbCol = dataJson['nb_col']
 
-		self.dataToLearnActived = []
+		self.activateAllPatterns()
+		
 
+	def activateAllPatterns(self):
+		self.dataToLearnActived = []
 		for i in range(len(self.dataToLearn)):
 			self.dataToLearnActived.append(True)
 
@@ -42,6 +45,10 @@ class HopfieldMatrix:
 				self.matrix += v * v.T # v.T = numpy.transpose(v)
 		
 		self.matrix /= lng
+
+		for x in range(lng):
+			self.matrix[x][x] = 0
+			
 		
 	def nbRow(self):
 		if(len(self.dataToLearn) > 1 ):
@@ -53,6 +60,7 @@ class HopfieldMatrix:
 		self.patternsTested = []
 		self.dataToTest = self.dataToLearn[:]
 
+		
 		self.changeTypeCoding(self.dataToLearn,self.IS_BINARY)
 		self.changeTypeCoding(self.dataToTest,self.IS_BINARY)
 
@@ -75,3 +83,10 @@ class HopfieldMatrix:
 					vector[i] = 0.0
 				elif (isBinary == False and vector[i] == 0.0):
 					vector[i] = -1.0
+
+	def totalErrorRecuperationAverage(self):
+		totalError = 0
+		for pattern in self.patternsTested:
+			errorPattern = pattern.errorPercentage(pattern.original) 
+			totalError += errorPattern
+		return (totalError/len(self.patternsTested))

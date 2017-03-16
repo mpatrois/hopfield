@@ -11,14 +11,14 @@ class PatternView:
     self.nbCol   = nbCol
     self.size    = size
 
-  def drawSteps(self,painter,x,y):
-    for idx,step in enumerate(self.pattern.steps):
-      xStep =  idx * self.getWidth() + x
-      painter.setBrush(QBrush(Qt.white))
-      drawPattern(painter,step,xStep+10,y,self.nbCol,self.size)
+  # def drawSteps(self,painter,x,y):
+  #   for idx,step in enumerate(self.pattern.steps):
+  #     xStep =  idx * self.getWidth() + x
+  #     painter.setBrush(QBrush(Qt.white))
+  #     drawPattern(painter,step,xStep+10,y,self.nbCol,self.size)
 
-    self.drawErrorPercentage(painter,x + 10 + len(self.pattern.steps) * self.getWidth(),y + self.getHeight()/2)
-    self.drawEnergy(painter,x + 10 + len(self.pattern.steps) * self.getWidth(),y + self.getHeight())
+  #   self.drawErrorPercentage(painter,x + 10 + len(self.pattern.steps) * self.getWidth(),y + self.getHeight()/2)
+  #   self.drawEnergy(painter,x + 10 + len(self.pattern.steps) * self.getWidth(),y + self.getHeight())
 
   def addStepsToScene(self,scene,x,y):
     for idx,step in enumerate(self.pattern.steps):
@@ -29,7 +29,7 @@ class PatternView:
     self.addEnergy(scene,x,y)
 
   def addPercentage(self,scene,x,y):
-    errorPercentage = self.pattern.errorPercentage(self.pattern.getFirstStep())
+    errorPercentage = self.pattern.errorPercentage(self.pattern.original)
     errorTxt = 'Erreur :' + str(errorPercentage) + "%"
     xPercentage = x + 10 + len(self.pattern.steps) * self.getWidth()
     yPercentage = y + self.size /2
