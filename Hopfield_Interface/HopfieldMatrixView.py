@@ -37,7 +37,8 @@ class HopfieldMatrixView():
 
   def drawLearnedPatterns(self):
     self.canvasLearnedData.setMinimumHeight(self.size * self.hopfieldMatrix.nbRow() + self.size)
-    # self.canvasLearnedData.setMaximumHeight(self.size * self.hopfieldMatrix.nbRow() + self.size)
+    self.canvasLearnedData.setMaximumHeight(self.size * self.hopfieldMatrix.nbRow() + self.size)
+
     self.canvasLearnedData.viewport().update()
     self.sceneLearnedData.clear()
     self.canvasLearnedData.viewport().update()
@@ -80,9 +81,14 @@ class HopfieldMatrixView():
     nbPattern = len(self.hopfieldMatrix.dataToLearn)
     patternWidth =  self.size * self.hopfieldMatrix.nbCol
     patternHeight =  self.size * self.hopfieldMatrix.nbRow()
+
+    # print(patternHeight)
+
     for idx in range(nbPattern):
       xPattern   = idx * (self.size * self.hopfieldMatrix.nbCol + 10)
       rectPattern = QRect(xPattern,0,patternWidth,patternHeight)
+      # print(rectPattern)
+      # print(pos.toPoint())
       if(rectPattern.contains(pos.toPoint())):
         return idx
 

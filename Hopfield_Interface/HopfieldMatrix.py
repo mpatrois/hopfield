@@ -51,7 +51,7 @@ class HopfieldMatrix:
 			
 		
 	def nbRow(self):
-		if(len(self.dataToLearn) > 1 ):
+		if(len(self.dataToLearn) > 0 ):
 			return int(len(self.dataToLearn[0])/self.nbCol)
 		else:
 			return 0

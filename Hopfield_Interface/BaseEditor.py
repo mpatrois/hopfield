@@ -18,14 +18,11 @@ class Window(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
         self.setWindowTitle("Réseau de Hopfield")
-        self.setWindowState(Qt.WindowMaximized)
+        # self.setWindowState(Qt.WindowMaximized)
         self.show()
 
         self.NB_COLUMN = 5
         self.NB_ROW = 5
-
-        
-        # self.canvasHopfield = QGraphicsView()
 
         self.canvasPatterns = QGraphicsView()
         self.scenePatterns = QGraphicsScene(self.canvasPatterns)
@@ -33,9 +30,6 @@ class Window(QMainWindow):
 
         self.canvasPatterns.mouseMoveEvent = self.mouseMoveEvent
         self.canvasPatterns.mousePressEvent = self.mouseMoveEvent
-
-        self.canvasPatterns.setMinimumHeight(SQUARE_WIDTH * self.NB_ROW + SQUARE_WIDTH)
-        self.canvasPatterns.setMaximumHeight(SQUARE_WIDTH * self.NB_ROW + SQUARE_WIDTH)
 
         self.currentPattern = []
         self.patterns = []
@@ -95,7 +89,6 @@ class Window(QMainWindow):
 
         layout.addWidget(buttonExportPatterns,2,2)
         
-
         layout.addWidget(colLabel,3,1)
         layout.addWidget(spinBoxNBColumn,4,1)
         
@@ -103,9 +96,9 @@ class Window(QMainWindow):
         layout.addWidget(spinBoxNBRow,4,2)
         layout.addWidget(buttonAddPattern,4,3)
         
-        layout.addWidget(self.canvasPatterns,5,1,1,4)
+        layout.addWidget(self.canvasPatterns,5,1,1,6)
         
-        layout.addWidget(self.hopfieldMatrixView.canvasLearnedData,6,1,1,4)
+        layout.addWidget(self.hopfieldMatrixView.canvasLearnedData,6,1,1,6)
 
         self.update()
 
@@ -118,6 +111,13 @@ class Window(QMainWindow):
     def changeNBRow(self,newValue):
         self.NB_ROW = newValue
         self.update()
+
+    def resizeAllCanvas(self):
+        self.canvasPatterns.setMinimumHeight(SQUARE_WIDTH * self.NB_ROW + SQUARE_WIDTH)
+        self.canvasPatterns.setMaximumHeight(SQUARE_WIDTH * self.NB_ROW + SQUARE_WIDTH) 
+
+        self.hopfieldMatrixView.canvasLearnedData.setMinimumHeight(SQUARE_WIDTH * self.NB_ROW + SQUARE_WIDTH)
+        self.hopfieldMatrixView.canvasLearnedData.setMaximumHeight(SQUARE_WIDTH * self.NB_ROW + SQUARE_WIDTH)
 
 
     def exportToFile(self,event):
@@ -153,9 +153,7 @@ class Window(QMainWindow):
         self.drawData()
         self.hopfieldMatrixView.drawLearnedPatterns()
 
-        self.canvasPatterns.setMinimumHeight(SQUARE_WIDTH * self.NB_ROW + SQUARE_WIDTH)
-        self.canvasPatterns.setMaximumHeight(SQUARE_WIDTH * self.NB_ROW + SQUARE_WIDTH)
-
+        self.resizeAllCanvas()
 
     def mouseMoveEvent(self,event):
         posMouse = self.canvasPatterns.mapToScene(event.pos())
@@ -163,7 +161,7 @@ class Window(QMainWindow):
         col = int(posMouse.x()/SQUARE_WIDTH)
         lin = int(posMouse.y()/SQUARE_WIDTH)
 
-        if(col >= 0 and col < self.NB_COLUMN and lin >= 0 and lin < self.NB_ROW):
+        if(col >= 0 and col < self.NB_COLUMN and lin >= 0 and lbin < self.NB_ROW):
             if event.buttons() == Qt.LeftButton:
                 self.currentPattern[lin*self.NB_COLUMN + col] = 1.0
             elif event.buttons() == Qt.RightButton:
@@ -179,15 +177,19 @@ class Window(QMainWindow):
             self.hopfieldMatrix.dataToLearnActived.append(True)
 
         self.hopfieldMatrixView.drawLearnedPatterns()
+        
+        self.resizeAllCanvas()
+
 
     
     def mousePressEventHopfiedl(self,event):
         posMouse = self.hopfieldMatrixView.canvasLearnedData.mapToScene(event.pos())
         indexPattern = self.hopfieldMatrixView.getIndexOfPattern(posMouse)
-
         if(indexPattern!=-1):
             self.hopfieldMatrix.dataToLearn.pop(indexPattern)
             self.hopfieldMatrixView.drawLearnedPatterns()
+            self.resizeAllCanvas()
+
 
 
 app    = QApplication(sys.argv)

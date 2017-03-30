@@ -37,8 +37,6 @@ def makeAStat(nbPatternsToLearn,noisePercentage,nbNeurons,isBinary):
     for numberOfPattern in range(1,nbPatternsToLearn+1):
         hopfieldNtwrk = HopfieldMatrix(isBinary,noisePercentage)
         hopfieldNtwrk.dataToLearn = []
-        # hopfieldNtwrk.NOISE = noisePercentage
-        # hopfieldNtwrk.IS_BINARY = isBinary
 
         for i in range(numberOfPattern):
             hopfieldNtwrk.dataToLearn.append(makeARandomPattern(nbNeurons,isBinary))
@@ -210,7 +208,6 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
 
     aw = ApplicationWindow()
-    # aw.setWindowTitle("PyQt5 Matplot Example")
     aw.show()
 
     app.exec_()
