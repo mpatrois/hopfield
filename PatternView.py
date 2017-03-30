@@ -4,6 +4,9 @@ from PyQt5.QtCore import *
 
 from DrawPattern import *
 
+from PIL import Image
+from PIL.ImageQt import ImageQt
+
 class PatternView:
   
   def __init__(self,pattern,nbCol,size):
@@ -11,22 +14,36 @@ class PatternView:
     self.nbCol   = nbCol
     self.size    = size
 
-  # def drawSteps(self,painter,x,y):
-  #   for idx,step in enumerate(self.pattern.steps):
-  #     xStep =  idx * self.getWidth() + x
-  #     painter.setBrush(QBrush(Qt.white))
-  #     drawPattern(painter,step,xStep+10,y,self.nbCol,self.size)
+    img = Image.open('image/arrow.png')
+    self.arrowImage = ImageQt(img)
+      # we need to hold reference to imgQ, or it will crash
+    # self.sceneTestedData.addPixmap(pixMap)
 
-  #   self.drawErrorPercentage(painter,x + 10 + len(self.pattern.steps) * self.getWidth(),y + self.getHeight()/2)
-  #   self.drawEnergy(painter,x + 10 + len(self.pattern.steps) * self.getWidth(),y + self.getHeight())
+   
 
   def addStepsToScene(self,scene,x,y):
-    for idx,step in enumerate(self.pattern.steps):
-      xStep =  idx * self.getWidth() + x
-      addPatternToScene(scene,step,xStep+10,y,self.nbCol,self.size)
 
-    self.addPercentage(scene,x,y)
-    self.addEnergy(scene,x,y)
+    
+    wPattern = self.getWidth()
+
+    wArrow = self.size * 2
+    yArrow = y + self.getHeight()/2 - wArrow / 2
+
+    arrowImgForDispay = self.arrowImage.scaled(wArrow,wArrow,Qt.KeepAspectRatio);
+    arrowPixMap = QPixmap.fromImage(arrowImgForDispay)
+
+
+    
+
+    for idx,step in enumerate(self.pattern.steps):
+      xStep =  idx * ( self.getWidth() + wArrow + 10) + x
+      addPatternToScene(scene,step,xStep,y,self.nbCol,self.size)
+      
+      if(idx != len(self.pattern.steps)-1):
+       addImageToScene(scene,xStep + wPattern + 5 ,yArrow,arrowPixMap)
+
+    # self.addPercentage(scene,x,y)
+    # self.addEnergy(scene,x,y)
 
   def addPercentage(self,scene,x,y):
     errorPercentage = self.pattern.errorPercentage(self.pattern.original)
@@ -49,4 +66,4 @@ class PatternView:
     return len(self.pattern.original)/self.nbCol * self.size
 
   def getWidth(self):
-    return self.size * self.nbCol + 10
+    return self.size * self.nbCol

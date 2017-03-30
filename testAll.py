@@ -7,9 +7,9 @@ import random
 from HopfieldMatrix     import HopfieldMatrix
 from Pattern            import Pattern
 
-NB_NEURONS = 10
-NB_TOTAL_PATTERNS = 30
-NB_RUNS = 5000
+NB_NEURONS = 100
+NB_TOTAL_PATTERNS = 10
+NB_RUNS = 400
 NOISE = 0
 
 def makeARandomPattern(sizePattern):

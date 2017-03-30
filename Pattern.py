@@ -26,6 +26,26 @@ class Pattern:
       
       if(self.isStable(out) == 1 ):
         break 
+      # if(numpy.all( numpy.sign(self.getLastStep()) == numpy.sign(out) )):
+      #   break 
+  
+  # def calculAllSteps(self,noisePercentage,typeFunction):
+
+  #   matrixHop = self.hopfieldMatrix.matrix
+  #   data = self.makeNoise(noisePercentage)
+    
+  #   start  = numpy.array(data)
+  #   self.steps.append(start)
+  #   cpt = 0
+  #   while(cpt < 40):
+  #     out = numpy.dot(self.getLastStep(),matrixHop) #multiply matrix out by matrixHop
+      
+  #     self.signFunction(out,typeFunction)
+  #     if(numpy.all( numpy.sign(self.getLastStep()) == numpy.sign(out) )):
+  #       break
+  #     cpt += 1
+
+  #     self.steps.append(out)
 
   def calculAllStepsAsync(self,noisePercentage,typeFunction):
 
@@ -76,9 +96,10 @@ class Pattern:
 
 
   def isStable(self,lastStep):
-    for i in range(len(self.steps)):
-      if( numpy.all( numpy.sign(self.steps[i]) == numpy.sign(lastStep) )):
-        if(self.steps[i] is not lastStep):
+    nbSteps = len(self.steps)
+    for i in range(nbSteps):
+      if( numpy.all( numpy.sign(self.steps[nbSteps-1-i]) == numpy.sign(lastStep) )):
+        if(self.steps[nbSteps-1-i] is not lastStep):
           return True
     
     return False

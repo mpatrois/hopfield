@@ -5,12 +5,17 @@ from PyQt5.QtGui  import *
 from PyQt5.QtWidgets  import *
 
 
+
+
 from DrawPattern import *
 from PatternView import *
 
 class HopfieldMatrixView():    
 
   def __init__(self,hopfieldMatrix,size,mainWindow):
+
+
+    
     
     self.hopfieldMatrix = hopfieldMatrix
     self.size  = size
@@ -26,6 +31,9 @@ class HopfieldMatrixView():
     self.canvasTestedData.setScene(self.sceneTestedData)
 
     self.mainWindow = mainWindow
+
+
+    
 
   def drawLearnedPatterns(self):
 
@@ -53,9 +61,13 @@ class HopfieldMatrixView():
       patternView = PatternView(pattern,self.hopfieldMatrix.nbCol, self.size)
       patternsView.append(patternView)
     
+
+    
     for patternIndex, patternView in enumerate(patternsView):
       y = patternIndex * ( patternView.getHeight() +  self.size )
       patternView.addStepsToScene(self.sceneTestedData,30,y +  self.size *  self.hopfieldMatrix.nbCol +2* self.size)
+      
+      
 
   def mousePressEventCanvasLearnedData(self,event):
     posMouse = self.canvasLearnedData.mapToScene(event.pos())

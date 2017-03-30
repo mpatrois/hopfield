@@ -11,7 +11,7 @@ from DrawPattern import *
 from HopfieldMatrixView import *
 from HopfieldMatrix import *
 
-SQUARE_WIDTH = 30
+SQUARE_WIDTH = 10
 
 class Window(QMainWindow):
 
@@ -53,14 +53,14 @@ class Window(QMainWindow):
         
 
         spinBoxNBColumn = QSpinBox()
-        spinBoxNBColumn.setMaximum (20)
+        spinBoxNBColumn.setMaximum (50)
         spinBoxNBColumn.setMinimum (1)
         spinBoxNBColumn.setValue (self.NB_COLUMN)
         spinBoxNBColumn.valueChanged.connect(self.changeNBColumn)
         spinBoxNBColumn.setMaximumWidth(200)
 
         spinBoxNBRow = QSpinBox()
-        spinBoxNBRow.setMaximum (20)
+        spinBoxNBRow.setMaximum (50)
         spinBoxNBRow.setMinimum (1)
         spinBoxNBRow.setValue (self.NB_ROW)
         spinBoxNBRow.valueChanged.connect(self.changeNBRow)

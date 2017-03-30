@@ -45,4 +45,9 @@ def addTextToScene(scene,x,y,text,size,color):
     textItem.setDefaultTextColor(QColor(color))
 
     scene.addItem(textItem)
+
+def addImageToScene(scene,x,y,pixMap):
+
+    item = scene.addPixmap(pixMap)
+    item.setPos(x,y)
     
