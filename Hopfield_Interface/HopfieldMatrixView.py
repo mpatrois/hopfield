@@ -36,9 +36,8 @@ class HopfieldMatrixView():
     
 
   def drawLearnedPatterns(self):
-
     self.canvasLearnedData.setMinimumHeight(self.size * self.hopfieldMatrix.nbRow() + self.size)
-    self.canvasLearnedData.setMaximumHeight(self.size * self.hopfieldMatrix.nbRow() + self.size)
+    # self.canvasLearnedData.setMaximumHeight(self.size * self.hopfieldMatrix.nbRow() + self.size)
     self.canvasLearnedData.viewport().update()
     self.sceneLearnedData.clear()
     self.canvasLearnedData.viewport().update()

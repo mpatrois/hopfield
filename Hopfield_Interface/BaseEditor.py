@@ -34,6 +34,9 @@ class Window(QMainWindow):
         self.canvasPatterns.mouseMoveEvent = self.mouseMoveEvent
         self.canvasPatterns.mousePressEvent = self.mouseMoveEvent
 
+        self.canvasPatterns.setMinimumHeight(SQUARE_WIDTH * self.NB_ROW + SQUARE_WIDTH)
+        self.canvasPatterns.setMaximumHeight(SQUARE_WIDTH * self.NB_ROW + SQUARE_WIDTH)
+
         self.currentPattern = []
         self.patterns = []
 
@@ -142,12 +145,16 @@ class Window(QMainWindow):
             self.currentPattern.append(-1.0)
     
     def update(self):
-        self.hopfieldMatrixView.nbCol = self.NB_COLUMN
+        self.hopfieldMatrixView.hopfieldMatrix.nbCol = self.NB_COLUMN
+        self.hopfieldMatrixView.nbRow = self.NB_ROW
         self.initPattern()
         self.patterns = []
         self.hopfieldMatrix.dataToLearn = self.patterns
         self.drawData()
         self.hopfieldMatrixView.drawLearnedPatterns()
+
+        self.canvasPatterns.setMinimumHeight(SQUARE_WIDTH * self.NB_ROW + SQUARE_WIDTH)
+        self.canvasPatterns.setMaximumHeight(SQUARE_WIDTH * self.NB_ROW + SQUARE_WIDTH)
 
 
     def mouseMoveEvent(self,event):
@@ -175,7 +182,7 @@ class Window(QMainWindow):
 
     
     def mousePressEventHopfiedl(self,event):
-        posMouse = self.hopfieldMatrixView.mapToScene(event.pos())
+        posMouse = self.hopfieldMatrixView.canvasLearnedData.mapToScene(event.pos())
         indexPattern = self.hopfieldMatrixView.getIndexOfPattern(posMouse)
 
         if(indexPattern!=-1):
