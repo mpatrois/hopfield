@@ -20,16 +20,15 @@ class Pattern:
       3:self.add_reflection
     }
 
-  def calculAllSteps(self,noisePercentage):
-    self.calculAllStepsSync(noisePercentage)
+  def calculAllSteps(self):
+    self.calculAllStepsSync()
 
-  def calculAllStepsSync(self,noisePercentage):
+  def calculAllStepsSync(self):
 
     weightMatrix = self.hopfieldMatrix.matrix
     matrixFAS = self.hopfieldMatrix.matrixFAS
-    data = self.makeNoise(noisePercentage)
     
-    start  = numpy.array(data)
+    start  = numpy.copy(self.original)
     self.steps.append(start)
 
     lenVector = len(start)
@@ -86,22 +85,22 @@ class Pattern:
     return 0.5 * (1+numpy.tanh(val))
 
 
-  def signFunction (self,arrayToSign,nbIt):
-    sizePattern = len(arrayToSign)
-    for i in range(sizePattern):
+  # def signFunction (self,arrayToSign,nbIt):
+  #   sizePattern = len(arrayToSign)
+  #   for i in range(sizePattern):
       
-      rand = random.randint(0,2)
-      print(rand)
+  #     rand = random.randint(0,2)
+  #     print(rand)
 
-      # if(rand==0):
-      arrayToSign[i] = self.add_filter(arrayToSign[i],nbIt)
-      # elif (rand==1):
-      arrayToSign[i] = self.add_reflection(arrayToSign[i])
-      # elif(rand==2):
-      #   arrayToSign[i] = self.add_blockage(i)
+  #     # if(rand==0):
+  #     arrayToSign[i] = self.add_filter(arrayToSign[i],nbIt)
+  #     # elif (rand==1):
+  #     arrayToSign[i] = self.add_reflection(arrayToSign[i])
+  #     # elif(rand==2):
+  #     #   arrayToSign[i] = self.add_blockage(i)
 
 
-      arrayToSign[i] =  self.transferFunction(arrayToSign[i])
+      # arrayToSign[i] =  self.transferFunction(arrayToSign[i])
     
   def recallEfficiency(self):
     nbErrors = 0
@@ -122,77 +121,8 @@ class Pattern:
     return len(self.steps)
 
 
-  def makeNoise(self,noisePercentage):
-   return self.makeNoiseStandard(noisePercentage)
+  def recallEfficiency(self):
+    nbErrors = 0
+    lastStep = self.getLastNeuronsState()
 
-  def makeNoiseStandard(self,noisePercentage):
-    nbErrorsToMake = noisePercentage * self.nbNeurons / 100
-    array = [i for i in range(int(self.nbNeurons))]
-    random.shuffle(array)
-
-    errors = [array.pop() for i in range(int(nbErrorsToMake))]
-      
-    data = numpy.copy(self.original)
-
-    while len(errors)>0:
-      idx = errors.pop()
-      if(data[idx] == -1.0):
-        data[idx] = 1.0
-      else:
-        data[idx] = -1.0
-
-    return data
-
-  def makeNoiseLeft(self,noisePercentage):
-    nbErrorsToMake = noisePercentage * self.nbNeurons / 100
-    array = [i for i in range(int(self.nbNeurons/2))]
-    random.shuffle(array)
-
-    errors = [array.pop() for i in range(int(nbErrorsToMake))]
-      
-    data = numpy.copy(self.original)
-
-    while len(errors)>0:
-      idx = errors.pop()
-      if(data[idx] == -1.0):
-        data[idx] = 1.0
-      else:
-        data[idx] = -1.0
-
-    return data
-
-  def makeNoiseRight(self,noisePercentage):
-    nbErrorsToMake = noisePercentage * self.nbNeurons / 100
-    array = [i for i in range(int(self.nbNeurons/2),int(self.nbNeurons/2)*2)]
-    random.shuffle(array)
-
-    errors = [array.pop() for i in range(int(nbErrorsToMake))]
-      
-    data = numpy.copy(self.original)
-
-    while len(errors)>0:
-      idx = errors.pop()
-      if(data[idx] == -1.0):
-        data[idx] = 1.0
-      else:
-        data[idx] = -1.0
-
-    return data
-
-  def makeNoiseCenter(self,noisePercentage):
-    nbErrorsToMake = noisePercentage * self.nbNeurons / 100
-    array = [i for i in range(int(self.nbNeurons/2)-int(self.nbNeurons/3),int(self.nbNeurons/2)*2-int(self.nbNeurons/3))]
-    random.shuffle(array)
-
-    errors = [array.pop() for i in range(int(nbErrorsToMake))]
-      
-    data = numpy.copy(self.original)
-
-    while len(errors)>0:
-      idx = errors.pop()
-      if(data[idx] == -1.0):
-        data[idx] = 1.0
-      else:
-        data[idx] = -1.0
-
-    return data
+    return int(( numpy.all( numpy.sign(lastStep) == self.original )))

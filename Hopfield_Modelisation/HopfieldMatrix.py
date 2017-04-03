@@ -1,12 +1,13 @@
 import numpy
 import json
+import random
 
 from Pattern import Pattern
 
 class HopfieldMatrix:
 	
-	def __init__(self,isHealthy):
-		self.NOISE = 0
+	def __init__(self,fasPercentage):
+		self.FASPERCENTAGE = fasPercentage
 
 
 		self.dataToLearn   = []
@@ -16,9 +17,6 @@ class HopfieldMatrix:
 
 		self.matrix  = numpy.zeros( (0,0) )
 		self.matrixFAS  = numpy.zeros( (0,0) )
-
-		self.isHealthy = isHealthy
-
 
 		self.nbCol = 5
 
@@ -43,35 +41,38 @@ class HopfieldMatrix:
 		for x in range(lng):
 			self.matrix[x][x] = 0
 
-		self.makeFAS(lng)
-		print(self.matrixFAS)
+		self.makeFASTWO(lng,self.FASPERCENTAGE)
+		
 
 	
-	def makeFAS(self,size):
+	def makeFASTWO(self,sizePattern,fasPercentage):
 
-		self.matrixFAS  = numpy.zeros( (size,size) )
+		self.matrixFAS  = numpy.zeros( (sizePattern,sizePattern) )
 
-		for i in range(size):
-			for j in range(size):
+		nbFasToMake = fasPercentage * (sizePattern) / 100
 
-				if(self.isHealthy == False):
-
-					if(numpy.random.random_integers(3)==1):
-						self.matrixFAS[i,j] = 1
-					elif(numpy.random.random_integers(3)==1):
-						self.matrixFAS[i,j] = 2
-					elif(numpy.random.random_integers(3)==1):
-						self.matrixFAS[i,j] = 3
+		for i in range(sizePattern):
+			for j in random.sample(range(sizePattern), int(nbFasToMake)):
+				typeFas =  numpy.random.random_integers(1,3)
+				self.matrixFAS[i][j] = typeFas
 
 
-	
-	def isCorrect(self,step):
-		for pattern in self.dataToLearn:
-				if( numpy.all( numpy.sign(pattern) == numpy.sign(step) )):
-					return True
-		return False
+	def makeFASONE(self,sizePattern,fasPercentage):
 
-			
+		self.matrixFAS  = numpy.zeros( (sizePattern,sizePattern) )
+
+		nbFasToMake = fasPercentage * (sizePattern*sizePattern) / 100
+
+		randomI = numpy.random.randint(sizePattern,size=nbFasToMake)
+		randomJ = numpy.random.randint(sizePattern,size=nbFasToMake)
+
+		for n in range(len(randomI)):
+			typeFas =  numpy.random.random_integers(1,3)
+			i = randomI[n]
+			j = randomJ[n]
+
+
+			self.matrixFAS[i,j] = typeFas
 		
 	def nbRow(self):
 		if(len(self.dataToLearn) > 0 ):
@@ -87,7 +88,7 @@ class HopfieldMatrix:
 
 		for data in self.dataToTest:
 			pattern = Pattern(data,self)
-			pattern.calculAllSteps(self.NOISE)
+			pattern.calculAllSteps()
 			self.patternsTested.append(pattern)
 
 	def changeTypeCoding(self,datas,isBinary):
@@ -106,3 +107,9 @@ class HopfieldMatrix:
 			errorPattern = pattern.errorPercentage(pattern.original) 
 			totalError += errorPattern
 		return (totalError/len(self.patternsTested))
+
+	def totalEfficiency(self):
+		totalEfficiency = 0
+		for pattern in self.patternsTested:
+			totalEfficiency += pattern.recallEfficiency() 
+		return (totalEfficiency/len(self.patternsTested))

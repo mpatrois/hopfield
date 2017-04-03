@@ -23,8 +23,6 @@ class Window(QMainWindow):
     def __init__(self):
       QMainWindow.__init__(self)
       self.show()
-
-      self.HEALTHY = False
      
       self.setWindowTitle("Réseau de Hopfield")
       self.setWindowState(Qt.WindowMaximized)
@@ -34,7 +32,7 @@ class Window(QMainWindow):
       self.files = sorted(os.listdir("patternsCreated"))
       self.fileName = 'patternsCreated/' + self.files[0]
       
-      self.hopfieldMatrix = HopfieldMatrix( self.HEALTHY)
+      self.hopfieldMatrix = HopfieldMatrix(0)
       self.hopfieldMatrix.loadDataByFile(self.fileName)
 
       hopfieldLabel = QLabel('Patrons appris :')
@@ -49,7 +47,7 @@ class Window(QMainWindow):
       spinBoxNoise = QSpinBox()
       spinBoxNoise.setMaximum (100)
       spinBoxNoise.setMinimum (0)
-      spinBoxNoise.valueChanged.connect(self.changeNoise)
+      spinBoxNoise.valueChanged.connect(self.changeFasPercentage)
 
 
       filesLabel = QLabel('Fichiers')
@@ -76,8 +74,8 @@ class Window(QMainWindow):
       self.hopfieldMatrixView.drawLearnedPatterns()
       self.hopfieldMatrixView.drawTestedPatterns()
 
-    def changeNoise(self,newNoise):
-      self.hopfieldMatrix.NOISE = newNoise
+    def changeFasPercentage(self,FASPERCENTAGE):
+      self.hopfieldMatrix.FASPERCENTAGE = FASPERCENTAGE
       self.update()
 
     def filesComboBoxChanged(self,idx):
