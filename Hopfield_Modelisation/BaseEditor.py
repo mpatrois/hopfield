@@ -76,7 +76,7 @@ class Window(QMainWindow):
         buttonClearPatterns.setText("Clear")
         buttonClearPatterns.clicked.connect(self.clearPattern)
 
-        self.hopfieldMatrix = HopfieldMatrix()
+        self.hopfieldMatrix = HopfieldMatrix(0)
         self.NB_COLUMN = self.hopfieldMatrix.nbCol
 
         self.hopfieldMatrixView = HopfieldMatrixView(self.hopfieldMatrix,SQUARE_WIDTH,self)

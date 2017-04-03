@@ -46,7 +46,9 @@ class Window(QMainWindow):
         fileNameLabel.setMaximumWidth(200)
         
 
-        
+        buttonClearPatterns = QPushButton()
+        buttonClearPatterns.setText("Clear")
+        buttonClearPatterns.clicked.connect(self.clearPattern)
         
 
         spinBoxNBColumn = QSpinBox()
@@ -91,6 +93,8 @@ class Window(QMainWindow):
         
         layout.addWidget(colLabel,3,1)
         layout.addWidget(spinBoxNBColumn,4,1)
+
+        layout.addWidget(buttonClearPatterns,4,4)
         
         layout.addWidget(rowLabel,3,2)
         layout.addWidget(spinBoxNBRow,4,2)
@@ -102,6 +106,9 @@ class Window(QMainWindow):
 
         self.update()
 
+    def clearPattern(self,event):
+        self.initPattern()
+        self.drawData()
 
     def changeNBColumn(self,newValue):
         self.NB_COLUMN = newValue
