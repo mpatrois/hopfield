@@ -72,6 +72,10 @@ class Window(QMainWindow):
         buttonExportPatterns.setText("Exporter les patterns")
         buttonExportPatterns.clicked.connect(self.exportToFile)
 
+        buttonClearPatterns = QPushButton()
+        buttonClearPatterns.setText("Clear")
+        buttonClearPatterns.clicked.connect(self.clearPattern)
+
         self.hopfieldMatrix = HopfieldMatrix()
         self.NB_COLUMN = self.hopfieldMatrix.nbCol
 
@@ -95,6 +99,7 @@ class Window(QMainWindow):
         layout.addWidget(rowLabel,3,2)
         layout.addWidget(spinBoxNBRow,4,2)
         layout.addWidget(buttonAddPattern,4,3)
+        layout.addWidget(buttonClearPatterns,4,4)
         
         layout.addWidget(self.canvasPatterns,5,1,1,6)
         
@@ -168,6 +173,10 @@ class Window(QMainWindow):
                 self.currentPattern[lin*self.NB_COLUMN + col] = -1.0
             
             self.drawData()
+
+    def clearPattern(self,event):
+        self.initPattern()
+        self.drawData()
 
     def addPattern(self):
         self.patterns.append(self.currentPattern[:])

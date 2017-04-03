@@ -11,7 +11,7 @@ from DrawPattern import *
 from HopfieldMatrixView import *
 from HopfieldMatrix import *
 
-SQUARE_WIDTH = 4
+SQUARE_WIDTH = 10
 
 class Window(QMainWindow):
 
@@ -72,6 +72,10 @@ class Window(QMainWindow):
         buttonExportPatterns.setText("Exporter les patterns")
         buttonExportPatterns.clicked.connect(self.exportToFile)
 
+        buttonClearPatterns = QPushButton()
+        buttonClearPatterns.setText("Clear")
+        buttonClearPatterns.clicked.connect(self.clearPattern)
+
         self.hopfieldMatrix = HopfieldMatrix()
         self.NB_COLUMN = self.hopfieldMatrix.nbCol
 
@@ -95,6 +99,7 @@ class Window(QMainWindow):
         layout.addWidget(rowLabel,3,2)
         layout.addWidget(spinBoxNBRow,4,2)
         layout.addWidget(buttonAddPattern,4,3)
+        layout.addWidget(buttonClearPatterns,4,4)
         
         layout.addWidget(self.canvasPatterns,5,1,1,6)
         
@@ -169,12 +174,16 @@ class Window(QMainWindow):
             
             self.drawData()
 
+    def clearPattern(self,event):
+        self.initPattern()
+        self.drawData()
+
     def addPattern(self):
         self.patterns.append(self.currentPattern[:])
         self.hopfieldMatrix.dataToLearn = self.patterns
         self.hopfieldMatrixView.datas = []
-        for i in range(len(self.hopfieldMatrix.dataToLearn)):
-            self.hopfieldMatrix.dataToLearnActived.append(True)
+        # for i in range(len(self.hopfieldMatrix.dataToLearn)):
+        #     self.hopfieldMatrix.dataToLearnActived.append(True)
 
         self.hopfieldMatrixView.drawLearnedPatterns()
         

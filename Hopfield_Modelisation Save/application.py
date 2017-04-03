@@ -16,7 +16,7 @@ from HopfieldMatrixView import HopfieldMatrixView
 from Pattern            import Pattern
 from PatternView        import PatternView
 
-SQUARE_WIDTH = 4
+SQUARE_WIDTH = 3
 
 class Window(QMainWindow):
 
