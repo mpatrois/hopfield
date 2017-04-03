@@ -16,7 +16,7 @@ from HopfieldMatrixView import HopfieldMatrixView
 from Pattern            import Pattern
 from PatternView        import PatternView
 
-SQUARE_WIDTH = 4
+SQUARE_WIDTH = 10
 
 class Window(QMainWindow):
 
@@ -43,11 +43,11 @@ class Window(QMainWindow):
       layout = QGridLayout(widget)
       self.setCentralWidget(widget)
 
-      noiseLabel = QLabel('Taux de bruitage (%)')
-      spinBoxNoise = QSpinBox()
-      spinBoxNoise.setMaximum (100)
-      spinBoxNoise.setMinimum (0)
-      spinBoxNoise.valueChanged.connect(self.changeFasPercentage)
+      fasLabel = QLabel('Taux de FAS (%)')
+      spinBoxFas = QSpinBox()
+      spinBoxFas.setMaximum (100)
+      spinBoxFas.setMinimum (0)
+      spinBoxFas.valueChanged.connect(self.changeFasPercentage)
 
 
       filesLabel = QLabel('Fichiers')
@@ -59,8 +59,8 @@ class Window(QMainWindow):
       layout.addWidget(filesLabel,2,1)
       layout.addWidget(self.filesComboBox,2,2)
       
-      layout.addWidget(noiseLabel,1,1)
-      layout.addWidget(spinBoxNoise,1,2)
+      layout.addWidget(fasLabel,1,1)
+      layout.addWidget(spinBoxFas,1,2)
       
       layout.addWidget(hopfieldLabel,3,1)
       layout.addWidget(self.hopfieldMatrixView.canvasLearnedData,3,2,1,10)
@@ -82,6 +82,11 @@ class Window(QMainWindow):
       value = self.filesComboBox.itemText(idx)
       self.fileName = 'patternsCreated/' + value
       self.hopfieldMatrix.loadDataByFile(self.fileName)
+
+      self.hopfieldMatrixView.size = SQUARE_WIDTH
+      if(self.hopfieldMatrix.nbRow() >= 30):
+        self.hopfieldMatrixView.size = 4
+
       self.update()
 
     def update(self):

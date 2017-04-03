@@ -83,24 +83,6 @@ class Pattern:
 
   def aux_gain_sigmoid(self,val):
     return 0.5 * (1+numpy.tanh(val))
-
-
-  # def signFunction (self,arrayToSign,nbIt):
-  #   sizePattern = len(arrayToSign)
-  #   for i in range(sizePattern):
-      
-  #     rand = random.randint(0,2)
-  #     print(rand)
-
-  #     # if(rand==0):
-  #     arrayToSign[i] = self.add_filter(arrayToSign[i],nbIt)
-  #     # elif (rand==1):
-  #     arrayToSign[i] = self.add_reflection(arrayToSign[i])
-  #     # elif(rand==2):
-  #     #   arrayToSign[i] = self.add_blockage(i)
-
-
-      # arrayToSign[i] =  self.transferFunction(arrayToSign[i])
     
   def recallEfficiency(self):
     nbErrors = 0

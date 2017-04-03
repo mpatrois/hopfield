@@ -41,11 +41,11 @@ class HopfieldMatrix:
 		for x in range(lng):
 			self.matrix[x][x] = 0
 
-		self.makeFASTWO(lng,self.FASPERCENTAGE)
+		self.makeFAS(lng,self.FASPERCENTAGE)
 		
 
 	
-	def makeFASTWO(self,sizePattern,fasPercentage):
+	def makeFAS(self,sizePattern,fasPercentage):
 
 		self.matrixFAS  = numpy.zeros( (sizePattern,sizePattern) )
 
@@ -57,22 +57,22 @@ class HopfieldMatrix:
 				self.matrixFAS[i][j] = typeFas
 
 
-	def makeFASONE(self,sizePattern,fasPercentage):
+	# def makeFASONE(self,sizePattern,fasPercentage):
 
-		self.matrixFAS  = numpy.zeros( (sizePattern,sizePattern) )
+	# 	self.matrixFAS  = numpy.zeros( (sizePattern,sizePattern) )
 
-		nbFasToMake = fasPercentage * (sizePattern*sizePattern) / 100
+	# 	nbFasToMake = fasPercentage * (sizePattern*sizePattern) / 100
 
-		randomI = numpy.random.randint(sizePattern,size=nbFasToMake)
-		randomJ = numpy.random.randint(sizePattern,size=nbFasToMake)
+	# 	randomI = numpy.random.randint(sizePattern,size=nbFasToMake)
+	# 	randomJ = numpy.random.randint(sizePattern,size=nbFasToMake)
 
-		for n in range(len(randomI)):
-			typeFas =  numpy.random.random_integers(1,3)
-			i = randomI[n]
-			j = randomJ[n]
+	# 	for n in range(len(randomI)):
+	# 		typeFas =  numpy.random.random_integers(1,3)
+	# 		i = randomI[n]
+	# 		j = randomJ[n]
 
 
-			self.matrixFAS[i,j] = typeFas
+	# 		self.matrixFAS[i,j] = typeFas
 		
 	def nbRow(self):
 		if(len(self.dataToLearn) > 0 ):
@@ -91,22 +91,6 @@ class HopfieldMatrix:
 			pattern.calculAllSteps()
 			self.patternsTested.append(pattern)
 
-	def changeTypeCoding(self,datas,isBinary):
-		lngVector  = len(datas[0])
-
-		for vector in datas :
-			for i in range(lngVector):
-				if(isBinary and vector[i] == -1.0):
-					vector[i] = 0.0
-				elif (isBinary == False and vector[i] == 0.0):
-					vector[i] = -1.0
-
-	def totalErrorRecuperationAverage(self):
-		totalError = 0
-		for pattern in self.patternsTested:
-			errorPattern = pattern.errorPercentage(pattern.original) 
-			totalError += errorPattern
-		return (totalError/len(self.patternsTested))
 
 	def totalEfficiency(self):
 		totalEfficiency = 0

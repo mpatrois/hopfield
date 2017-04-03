@@ -9,7 +9,7 @@ from Pattern            import Pattern
 
 NB_NEURONS = 100
 NB_TOTAL_PATTERNS = 20
-NB_RUNS = 200
+NB_RUNS = 10
 
 transferFunction = {
   'first'  : Pattern.firstFunction,
@@ -31,10 +31,8 @@ def makeARandomPattern(sizePattern):
 def makeAStat(nbPatternsToLearn,noisePercentage):
 	stat = []
 
-	HopfieldMatrix.NOISE = noisePercentage
-
 	for numberOfPattern in range(1,nbPatternsToLearn):
-		hopfieldNtwrk = HopfieldMatrix()
+		hopfieldNtwrk = HopfieldMatrix(True,noisePercentage)
 		hopfieldNtwrk.dataToLearn = []
 
 		for i in range(numberOfPattern):

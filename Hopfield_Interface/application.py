@@ -16,7 +16,7 @@ from HopfieldMatrixView import HopfieldMatrixView
 from Pattern            import Pattern
 from PatternView        import PatternView
 
-SQUARE_WIDTH = 4
+SQUARE_WIDTH = 10
 
 class Window(QMainWindow):
 
@@ -124,6 +124,9 @@ class Window(QMainWindow):
       value = self.filesComboBox.itemText(idx)
       self.fileName = 'patternsCreated/' + value
       self.hopfieldMatrix.loadDataByFile(self.fileName)
+      self.hopfieldMatrixView.size = SQUARE_WIDTH
+      if(self.hopfieldMatrix.nbRow() >= 30):
+        self.hopfieldMatrixView.size = 4
       self.update()
 
     def update(self):

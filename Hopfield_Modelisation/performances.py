@@ -21,9 +21,6 @@ def makeARandomPattern(sizePattern,isBinary):
     return [ random.choice([-1.0,1.0]) for i in range(sizePattern) ]
 
 
-
-
-
 class CanvasStats(FigureCanvas):
 
     def __init__(self, parent=None, width=5, height=4, dpi=100):
@@ -64,7 +61,7 @@ class ApplicationWindow(QMainWindow):
 
         nbIterationLabel = QLabel('Nombre de tours')
         spinBoxNbIteration = QSpinBox()
-        spinBoxNbIteration.setMaximum (20)
+        spinBoxNbIteration.setMaximum (100)
         spinBoxNbIteration.setMinimum (self.NB_RUNS)
         spinBoxNbIteration.valueChanged.connect(self.changeNbIterations)
 
@@ -83,26 +80,8 @@ class ApplicationWindow(QMainWindow):
 
         self.setCentralWidget(self.main_widget)
 
-    def changeNbPatterns(self,newNbPatterns):
-        self.NB_TOTAL_PATTERNS = newNbPatterns
-        self.statsCanvas.axes.set_xlim(0, 100)
-        self.statsCanvas.axes.set_ylim(0,1.05)
-        self.statsCanvas.axes.clear()
-        self.statsCanvas.draw()
-
-    def changeNbNeurons(self,newNbNeurons):
-        self.NB_NEURONS = newNbNeurons
-
     def changeNbIterations(self,newNbIterations):
         self.NB_RUNS = newNbIterations
-
-    def changeBinary(self,idx):
-        value = self.binaryComboBox.itemText(idx)
-
-        if(value == 'Binaire'):
-            self.IS_BINARY = True
-        else:
-            self.IS_BINARY = False
 
     def changeTypeFunction(self,idx):
         value = self.typesFunctionComboBox.itemText(idx)
@@ -121,13 +100,9 @@ class ApplicationWindow(QMainWindow):
         self.statsCanvas.axes.set_ylim(0,1.05)
         self.statsCanvas.axes.set_xlabel("Pourcentage de FAS dans le réseau")
         self.statsCanvas.axes.set_ylabel("Performance de récuparation")
-        
 
-        # for cpt in range(self.NB_RUNS):
         hopfieldNtwrk = HopfieldMatrix(0)
-        hopfieldNtwrk.loadDataByFile('patternsCreated/good.json')
-
-       
+        hopfieldNtwrk.loadDataByFile('patternsCreated/quatresChiffres.json')
             
         totalStats = []
 
